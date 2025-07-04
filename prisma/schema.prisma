@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  Active
+  Inactive
+}
+
+enum Role {
+  Admin
+  Marketing
+  Agent
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  password     String
+  master       Boolean    @default(false)
+  isInRotation Boolean    @default(false)
+  role         Role       @default(Agent)
+  status       UserStatus @default(Active)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime?  @updatedAt
+
+  Leads        Lead[]
+  LeadsMessage Message[]
+  Connection   Connection?
+
+  @@map("users")
+}
+
+enum ConnectionStatus {
+  Active
+  Inactive
+}
+
+model Connection {
+  id         String           @id @default(uuid())
+  name       String
+  number     String
+  instanceId String
+  token      String
+  agentId    String           @unique
+  status     ConnectionStatus @default(Active)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime?        @updatedAt
+
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("connections")
+}
+
+model Contact {
+  id             String    @id @default(uuid())
+  name           String
+  whatsappNumber String
+  email          String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
+  Leads          Lead[]
+
+  @@map("contacts")
+}
+
+enum LeadStatus {
+  PreService
+  Service
+  Scheduling
+  Visit
+  Folder
+  CreditAnalysis
+  Proposal
+  Contract
+  Off
+  Finished
+}
+
+model Lead {
+  id        String     @id @default(uuid())
+  contactId String
+  agentId   String?
+  converted Boolean    @default(false)
+  status    LeadStatus @default(PreService)
+  value     Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
+
+  Contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  Agent   User?   @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("leads")
+}
+
+model Message {
+  id          String    @id @default(uuid())
+  leadId      String
+  agentId     String?
+  content     String
+  messageId   String
+  messageType String
+  fromMe      Boolean
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  Agent User? @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
