@@ -21,6 +21,24 @@ export class Contact extends AggregateRoot<ContactProps> {
 		this.touch()
 	}
 
+	get email() {
+		return this.props.email
+	}
+
+	set email(email: string) {
+		this.props.email = email
+		this.touch()
+	}
+
+	get whatsappNumber() {
+		return this.props.whatsappNumber
+	}
+
+	set whatsappNumber(whatsappNumber: WhatsappNumber) {
+		this.props.whatsappNumber = whatsappNumber
+		this.touch()
+	}
+
 	get createdAt() {
 		return this.props.createdAt
 	}

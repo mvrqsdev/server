@@ -51,8 +51,31 @@ export class Lead extends AggregateRoot<LeadProps> {
 		this.touch()
 	}
 
-	isConverted() {
+	get contactId() {
+		return this.props.contactId
+	}
+
+	set contactId(id: UniqueEntityID) {
+		this.props.contactId = id
+		this.touch()
+	}
+
+	get converted() {
 		return this.props.converted
+	}
+
+	set converted(value: boolean) {
+		this.props.converted = value
+		this.touch()
+	}
+
+	get value() {
+		return this.props.value
+	}
+
+	set value(value: number) {
+		this.props.value = value
+		this.touch()
 	}
 
 	private touch() {

@@ -43,15 +43,14 @@ enum ConnectionStatus {
 }
 
 model Connection {
-  id         String           @id @default(uuid())
-  name       String
-  number     String
-  instanceId String
-  token      String
-  agentId    String           @unique
-  status     ConnectionStatus @default(Active)
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime?        @updatedAt
+  id        String           @id @default(uuid())
+  name      String           @unique
+  number    String
+  token     String
+  agentId   String           @unique
+  status    ConnectionStatus @default(Active)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime?        @updatedAt
 
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
@@ -61,7 +60,7 @@ model Connection {
 model Contact {
   id             String    @id @default(uuid())
   name           String
-  whatsappNumber String
+  whatsappNumber String    @unique
   email          String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime? @updatedAt
@@ -86,7 +85,7 @@ enum LeadStatus {
 model Lead {
   id        String     @id @default(uuid())
   contactId String
-  agentId   String?
+  agentId   String
   converted Boolean    @default(false)
   status    LeadStatus @default(PreService)
   value     Int        @default(0)
@@ -94,7 +93,7 @@ model Lead {
   updatedAt DateTime?  @updatedAt
 
   Contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  Agent   User?   @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Agent   User    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
   @@map("leads")
 }

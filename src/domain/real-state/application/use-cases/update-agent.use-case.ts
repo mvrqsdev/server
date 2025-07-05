@@ -11,7 +11,9 @@ export interface UpdateAgentUseCaseRequest {
 	name: string
 	email: string
 	password: string
+	master: boolean
 	role: 'Admin' | 'Marketing' | 'Agent'
+	isInRotation: boolean
 	status: 'Active' | 'Inactive'
 }
 
@@ -29,6 +31,8 @@ export class UpdateAgentUseCase {
 		email,
 		password,
 		role,
+		isInRotation,
+		master,
 		status,
 	}: UpdateAgentUseCaseRequest): Promise<UpdateAgentUseCaseResponse> {
 		const agent = await this.agentRepository.findById(agentId)
@@ -48,6 +52,8 @@ export class UpdateAgentUseCase {
 		agent.email = email
 		agent.password = hashedPassword
 		agent.role = role
+		agent.master = master
+		agent.isInRotation = isInRotation
 		agent.status = status
 
 		await this.agentRepository.save(agent)

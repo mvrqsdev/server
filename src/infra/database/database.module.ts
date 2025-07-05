@@ -1,28 +1,40 @@
 import { Module } from '@nestjs/common'
 import { AgentRepository } from '@/domain/real-state/application/repositories/agent.repository'
-import { PermissionRepository } from '@/domain/roles/application/repositories/permission.repository'
-import { RoleRepository } from '@/domain/roles/application/repositories/role.repository'
+import { ConnectionRepository } from '@/domain/real-state/application/repositories/connection.repository'
+import { ContactRepository } from '@/domain/real-state/application/repositories/contact.repository'
+import { LeadRepository } from '@/domain/real-state/application/repositories/lead.repository'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaAgentRepository } from './prisma/repositories/prisma-agent.repository'
-import { PrismaPermissionRepository } from './prisma/repositories/prisma-permission.repository'
-import { PrismaRoleRepository } from './prisma/repositories/prisma-role.repository'
+import { PrismaConnectionRepository } from './prisma/repositories/prisma-connection.repository'
+import { PrismaContactRepository } from './prisma/repositories/prisma-contact.repository'
+import { PrismaLeadRepository } from './prisma/repositories/prisma-lead.repository'
 
 @Module({
 	providers: [
 		PrismaService,
 		{
-			provide: RoleRepository,
-			useClass: PrismaRoleRepository,
+			provide: LeadRepository,
+			useClass: PrismaLeadRepository,
 		},
 		{
-			provide: PermissionRepository,
-			useClass: PrismaPermissionRepository,
+			provide: ContactRepository,
+			useClass: PrismaContactRepository,
 		},
 		{
 			provide: AgentRepository,
 			useClass: PrismaAgentRepository,
 		},
+		{
+			provide: ConnectionRepository,
+			useClass: PrismaConnectionRepository,
+		},
 	],
-	exports: [PrismaService, RoleRepository, PermissionRepository, AgentRepository],
+	exports: [
+		PrismaService,
+		AgentRepository,
+		ContactRepository,
+		LeadRepository,
+		ConnectionRepository,
+	],
 })
 export class DatabaseModule {}

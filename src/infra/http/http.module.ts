@@ -1,36 +1,31 @@
 import { Module } from '@nestjs/common'
+import { RouleteService } from '@/domain/real-state/application/services/roulette.service'
 import { CreateAgentUseCase } from '@/domain/real-state/application/use-cases/create-agent.use-case'
-import { InactiveAgentUseCase } from '@/domain/real-state/application/use-cases/inactive-agent.use-case'
+import { CreateConnectionUseCase } from '@/domain/real-state/application/use-cases/create-connection.use-case'
+import { CreateLeadUseCase } from '@/domain/real-state/application/use-cases/create-lead.use-case'
 import { UpdateAgentUseCase } from '@/domain/real-state/application/use-cases/update-agent.use-case'
-import { CreateRoleUseCase } from '@/domain/roles/application/use-cases/create-role.use-case'
-import { DeleteRoleUseCase } from '@/domain/roles/application/use-cases/delete-role.use-case'
-import { UpdateRoleUseCase } from '@/domain/roles/application/use-cases/update-role.use-case'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'
+import { IntegrationModule } from '../integration/integration.module'
 import { CreateAgentController } from './controllers/create-agent.controller'
-import { CreateRoleController } from './controllers/create-role.controller'
-import { DeleteRoleController } from './controllers/delete-role.controller'
-import { InactiveAgentController } from './controllers/inactive-agent.controller'
+import { CreateConnectionController } from './controllers/create-connection.controller'
+import { CreateLeadController } from './controllers/create-lead.controller'
 import { UpdateAgentController } from './controllers/update-agent.controller'
-import { UpdateRoleController } from './controllers/update-role.controller'
 
 @Module({
-	imports: [DatabaseModule, CryptographyModule],
+	imports: [DatabaseModule, IntegrationModule, CryptographyModule],
 	controllers: [
 		CreateAgentController,
 		UpdateAgentController,
-		InactiveAgentController,
-		CreateRoleController,
-		UpdateRoleController,
-		DeleteRoleController,
+		CreateLeadController,
+		CreateConnectionController,
 	],
 	providers: [
 		CreateAgentUseCase,
 		UpdateAgentUseCase,
-		InactiveAgentUseCase,
-		CreateRoleUseCase,
-		UpdateRoleUseCase,
-		DeleteRoleUseCase,
+		CreateLeadUseCase,
+		CreateConnectionUseCase,
+		RouleteService,
 	],
 })
 export class HttpModule {}

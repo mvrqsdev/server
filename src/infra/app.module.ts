@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { EventEmitterModule } from '@nestjs/event-emitter'
-import { envSchema } from './env'
-import { EventsModule } from './http/events/events.module'
+import { envSchema } from './env/env'
+import { EnvModule } from './env/env.module'
 import { HttpModule } from './http/http.module'
 
 @Module({
@@ -11,9 +10,8 @@ import { HttpModule } from './http/http.module'
 			validate: (env) => envSchema.parse(env),
 			isGlobal: true,
 		}),
-		EventEmitterModule.forRoot(),
-		EventsModule,
 		HttpModule,
+		EnvModule,
 	],
 })
 export class AppModule {}

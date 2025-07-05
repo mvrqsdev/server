@@ -1,6 +1,6 @@
 import { compare, hash } from 'bcryptjs'
-import { HashComparer } from '@/domain/authentication/cryptography/hash-comparer.service'
-import { HashGenerator } from '@/domain/authentication/cryptography/hash-generator.service'
+import { HashComparer } from '@/domain/real-state/application/cryptography/hash-comparer'
+import { HashGenerator } from '@/domain/real-state/application/cryptography/hash-generator'
 
 export class BcryptHasher implements HashGenerator, HashComparer {
 	private HASH_SALT_LENGTH = 8

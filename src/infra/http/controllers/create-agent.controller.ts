@@ -6,7 +6,6 @@ import {
 	HttpCode,
 	Post,
 } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
 	ApiBody,
 	ApiConflictResponse,
@@ -18,26 +17,23 @@ import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { CreateAgentUseCase } from '@/domain/real-state/application/use-cases/create-agent.use-case'
 import { AgentAlreadyExistsError } from '@/domain/real-state/application/use-cases/errors/agent-already-exists.error'
-import { OnAgentCreatedEvent } from '../events/on-agent-created.event'
 
 const createAgentBodySchema = z.object({
 	name: z.string().describe('Nome do Agente no Sistema.'),
 	email: z.string().describe('Nome de usuário no sistema'),
 	password: z.string(),
-	image: z.string(),
-	roles: z.array(z.string().cuid()).optional().default([]),
+	role: z.enum(['Admin', 'Marketing', 'Agent']),
+	isInRotation: z.boolean().optional().default(false),
+	master: z.boolean().optional().default(false),
 })
 
 type CreateAgentBodySchema = z.infer<typeof createAgentBodySchema>
 
-export class CreateUserDTO extends createZodDto(createAgentBodySchema) {}
+export class CreateAgentDTO extends createZodDto(createAgentBodySchema) {}
 
 @Controller('/agents')
 export class CreateAgentController {
-	constructor(
-		private createAgent: CreateAgentUseCase,
-		private eventEmitter: EventEmitter2,
-	) {}
+	constructor(private createAgent: CreateAgentUseCase) {}
 
 	@Post()
 	@ApiOperation({
@@ -47,7 +43,7 @@ export class CreateAgentController {
 		tags: ['Agents'],
 	})
 	@ApiBody({
-		type: CreateUserDTO,
+		type: CreateAgentDTO,
 		schema: {
 			example: {
 				name: 'João da Silva',
@@ -73,14 +69,15 @@ export class CreateAgentController {
 	@UseZodGuard('body', createAgentBodySchema)
 	@HttpCode(201)
 	async handle(@Body() body: CreateAgentBodySchema) {
-		const { name, email, password, image, roles } = body
+		const { name, email, password, isInRotation, master, role } = body
 
 		const result = await this.createAgent.execute({
 			name,
 			email,
 			password,
-			image,
-			roleIds: roles,
+			isInRotation,
+			role,
+			master,
 		})
 
 		if (result.isLeft()) {
@@ -93,11 +90,5 @@ export class CreateAgentController {
 					throw new BadRequestException(error.message)
 			}
 		}
-
-		const event = new OnAgentCreatedEvent()
-		event.name = name
-		event.message = `O Agente ${name} com email ${email} foi cadastrado com sucesso.`
-
-		this.eventEmitter.emit('agent.created', event)
 	}
 }

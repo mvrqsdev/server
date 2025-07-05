@@ -1,14 +1,14 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { InstanceName } from './value-objects/instance-name.value-object'
 import { WhatsappNumber } from './value-objects/whatsapp-number.value-object'
 
 export interface ConnectionProps {
-	name: string
+	name: InstanceName
 	whatsappNumber: WhatsappNumber
-	instanceId: string
-	token: string
-	connectionId: UniqueEntityID
+	token: UniqueEntityID
+	agentId: UniqueEntityID
 	status: 'Active' | 'Inactive'
 	createdAt: Date
 	updatedAt?: Date | null
@@ -19,8 +19,30 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		return this.props.name
 	}
 
-	set name(name: string) {
+	set name(name: InstanceName) {
 		this.props.name = name
+		this.touch()
+	}
+
+	get whatsappNumber() {
+		return this.props.whatsappNumber
+	}
+
+	set whatsappNumber(whatsappNumber: WhatsappNumber) {
+		this.props.whatsappNumber = whatsappNumber
+		this.touch()
+	}
+
+	get token() {
+		return this.props.token
+	}
+
+	get agentId() {
+		return this.props.agentId
+	}
+
+	set agentId(agentId: UniqueEntityID) {
+		this.props.agentId = agentId
 		this.touch()
 	}
 

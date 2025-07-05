@@ -1,6 +1,7 @@
+import { Injectable } from '@nestjs/common'
 import { Agent } from '../../enterprise/entities/agent.entity'
 import { Lead } from '../../enterprise/entities/lead.entity'
-
+@Injectable()
 export class RouleteService {
 	getNextAgent({
 		agentsInRotation,

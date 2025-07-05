@@ -9,8 +9,9 @@ export interface CreateAgentUseCaseRequest {
 	name: string
 	email: string
 	password: string
-	image?: string
-	roleIds: string[]
+	master: boolean
+	role: 'Admin' | 'Marketing' | 'Agent'
+	isInRotation: boolean
 }
 
 type CreateAgentUseCaseResponse = Either<AgentAlreadyExistsError, { agent: Agent }>
@@ -25,6 +26,9 @@ export class CreateAgentUseCase {
 		name,
 		email,
 		password,
+		isInRotation,
+		master,
+		role,
 	}: CreateAgentUseCaseRequest): Promise<CreateAgentUseCaseResponse> {
 		const agentWithSameEmail = await this.agentRepository.findByEmail(email)
 
@@ -38,6 +42,9 @@ export class CreateAgentUseCase {
 			name,
 			email,
 			password: hashedPassword,
+			isInRotation,
+			role,
+			master,
 		})
 
 		await this.agentRepository.create(agent)

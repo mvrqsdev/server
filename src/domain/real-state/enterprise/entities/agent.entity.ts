@@ -60,12 +60,21 @@ export class Agent extends AggregateRoot<AgentProps> {
 		this.touch()
 	}
 
-	public isMaster(): boolean {
+	get isInRotation() {
+		return this.props.isInRotation
+	}
+
+	set isInRotation(value: boolean) {
+		this.props.isInRotation = value
+		this.touch()
+	}
+
+	get master() {
 		return this.props.master
 	}
 
-	public makeMaster() {
-		this.props.master = true
+	set master(value: boolean) {
+		this.props.master = value
 		this.touch()
 	}
 
@@ -82,12 +91,16 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	static create(
-		props: Optional<AgentProps, 'createdAt' | 'status' | 'role' | 'master'>,
+		props: Optional<
+			AgentProps,
+			'createdAt' | 'status' | 'role' | 'master' | 'isInRotation'
+		>,
 		id?: UniqueEntityID,
 	) {
 		const agent = new Agent(
 			{
 				...props,
+				isInRotation: props.isInRotation ?? false,
 				status: props.status ?? 'Active',
 				master: props.master ?? false,
 				role: props.role ?? 'Agent',

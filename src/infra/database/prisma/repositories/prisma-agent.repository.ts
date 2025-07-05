@@ -7,6 +7,28 @@ import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaAgentRepository implements AgentRepository {
 	constructor(private prisma: PrismaService) {}
+	async findAdmins(): Promise<Agent[]> {
+		const agents = await this.prisma.user.findMany({
+			where: {
+				role: 'Admin',
+			},
+		})
+
+		return agents.map(PrismaAgentMapper.toDomain)
+	}
+	async findAgentsInRotation(): Promise<Agent[]> {
+		const agents = await this.prisma.user.findMany({
+			where: {
+				status: 'Active',
+				isInRotation: true,
+			},
+			orderBy: {
+				createdAt: 'asc',
+			},
+		})
+
+		return agents.map(PrismaAgentMapper.toDomain)
+	}
 
 	async findById(id: string): Promise<Agent | null> {
 		const agent = await this.prisma.user.findUnique({

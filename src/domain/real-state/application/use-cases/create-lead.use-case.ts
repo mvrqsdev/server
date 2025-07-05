@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { Either, left, right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Agent } from '../../enterprise/entities/agent.entity'
 import { Contact } from '../../enterprise/entities/contact.entity'
 import { Lead } from '../../enterprise/entities/lead.entity'
@@ -9,6 +8,8 @@ import { AgentRepository } from '../repositories/agent.repository'
 import { ContactRepository } from '../repositories/contact.repository'
 import { LeadRepository } from '../repositories/lead.repository'
 import { RouleteService } from '../services/roulette.service'
+import { LeadAlreadyExistsError } from './errors/lead-already-exists.error'
+import { NoAgentInRouletteError } from './errors/no-agent-in-roulette.error'
 
 export interface CreateLeadUseCaseRequest {
 	name: string
@@ -16,7 +17,10 @@ export interface CreateLeadUseCaseRequest {
 	email: string
 }
 
-type CreateLeadUseCaseResponse = Either<ResourceNotFoundError, { lead: Lead }>
+type CreateLeadUseCaseResponse = Either<
+	NoAgentInRouletteError | LeadAlreadyExistsError,
+	{ lead: Lead }
+>
 
 @Injectable()
 export class CreateLeadUseCase {
@@ -32,7 +36,8 @@ export class CreateLeadUseCase {
 		email,
 		whatsappNumber,
 	}: CreateLeadUseCaseRequest): Promise<CreateLeadUseCaseResponse> {
-		let contact = await this.contactRepository.findByWhatsappNumber(whatsappNumber)
+		const whatsapp = WhatsappNumber.createFromText(whatsappNumber)
+		let contact = await this.contactRepository.findByWhatsappNumber(whatsapp.whatsappId)
 		if (!contact) {
 			contact = Contact.create({
 				name,
@@ -42,7 +47,11 @@ export class CreateLeadUseCase {
 			await this.contactRepository.create(contact)
 		}
 
-		let lead = await this.leadRepository.findLeadByContactId(contact.id.toString())
+		let lead = await this.leadRepository.findLastLeadByContactId(contact.id.toString())
+
+		if (lead && lead.status !== 'Finished') {
+			return left(new LeadAlreadyExistsError(contact.name))
+		}
 
 		if (!lead) {
 			const agentsInRotation = await this.agentRepository.findAgentsInRotation()
@@ -57,7 +66,7 @@ export class CreateLeadUseCase {
 					adminAgents,
 				})
 			} catch {
-				return left(new ResourceNotFoundError())
+				return left(new NoAgentInRouletteError())
 			}
 
 			lead = Lead.create({
