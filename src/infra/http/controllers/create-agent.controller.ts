@@ -10,7 +10,6 @@ import {
 	ApiBody,
 	ApiConflictResponse,
 	ApiCreatedResponse,
-	ApiHeader,
 	ApiOperation,
 } from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
@@ -56,12 +55,6 @@ export class CreateAgentController {
 	})
 	@ApiCreatedResponse({
 		description: 'Agente cadastrado com sucesso.',
-	})
-	@ApiHeader({
-		name: 'Cookie',
-		description: 'Session cookie no formato: sessionId={uuid}',
-		example: 'sessionId=123e4567-e89b-12d3-a456-426614174000',
-		required: true,
 	})
 	@ApiConflictResponse({
 		description: 'Conflito nos dados informados.',

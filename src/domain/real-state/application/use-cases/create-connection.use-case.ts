@@ -64,7 +64,6 @@ export class CreateConnectionUseCase {
 			instanceName: connection.name.value,
 			integration: 'WHATSAPP-BAILEYS',
 			number: connection.whatsappNumber.whatsappId,
-			qrcode: true,
 		})
 
 		if (!evolutionConnection) {

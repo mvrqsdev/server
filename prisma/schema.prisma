@@ -37,6 +37,24 @@ model User {
   @@map("users")
 }
 
+enum AuthenticationStrategy {
+  ApiKey
+  Session
+}
+
+model Authentication {
+  id        String                 @id @default(uuid())
+  token     String                 @unique
+  strategy  AuthenticationStrategy
+  agentId   String
+  ip        String?
+  userAgent String?
+  expiresAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime               @default(now())
+  updatedAt DateTime?              @updatedAt
+}
+
 enum ConnectionStatus {
   Active
   Inactive

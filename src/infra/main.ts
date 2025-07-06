@@ -17,14 +17,9 @@ async function bootstrap() {
 		.setTitle('Orbita API')
 		.setDescription('Documentação da API da Orbita.')
 		.setVersion('1.0.0')
-		.addCookieAuth('sessionId', {
-			type: 'apiKey',
-			in: 'cookie',
-			name: 'sessionId',
-		})
 		.build()
 
-	const document = () => SwaggerModule.createDocument(app, config)
+	const document = SwaggerModule.createDocument(app, config)
 	SwaggerModule.setup('swagger', app, document, {
 		jsonDocumentUrl: 'swagger/json',
 	})
