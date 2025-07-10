@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
-import { GetAuthenticationAndAgentByTokenUseCase } from '@/domain/real-state/application/use-cases/get-authentication-and-agent-by-token.use-case'
-import { RevokeAuthenticationUseCase } from '@/domain/real-state/application/use-cases/revoke-authentication.use-case'
-import { UpdateAuthenticationExpirationUseCase } from '@/domain/real-state/application/use-cases/update-authentication-expiration.use-case'
-import { Agent } from '@/domain/real-state/enterprise/entities/agent.entity'
-import { Authentication } from '@/domain/real-state/enterprise/entities/authentication.entity'
+import { GetAuthenticationAndAgentByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-and-agent-by-token.use-case'
+import { RevokeAuthenticationUseCase } from '@/application/use-cases/authentication/revoke-authentication.use-case'
+import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
+import { Agent } from '@/domain/agent/entities/agent.entity'
+import { Authentication } from '@/domain/authentication/entities/authentication.entity'
 import { IS_PUBLIC_KEY } from './public'
 
 @Injectable()

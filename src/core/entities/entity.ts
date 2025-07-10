@@ -1,5 +1,4 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: teste */
-import { UniqueEntityID } from './unique-entity-id'
+import { UniqueEntityID } from '../value-objects/unique-entity-id'
 
 export abstract class Entity<Props> {
 	private _id: UniqueEntityID

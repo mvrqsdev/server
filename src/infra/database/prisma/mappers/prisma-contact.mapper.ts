@@ -1,7 +1,7 @@
 import { Prisma, Contact as PrismaContact } from '@prisma/client'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Contact } from '@/domain/real-state/enterprise/entities/contact.entity'
-import { WhatsappNumber } from '@/domain/real-state/enterprise/entities/value-objects/whatsapp-number.value-object'
+import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { WhatsappNumber } from '@/core/value-objects/whatsapp-number.value-object'
+import { Contact } from '@/domain/contact/entities/contact.entity'
 
 export class PrismaContactMapper {
 	static toDomain(raw: PrismaContact): Contact {

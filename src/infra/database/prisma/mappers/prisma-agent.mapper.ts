@@ -1,6 +1,6 @@
 import { Prisma, User as PrismaAgent } from '@prisma/client'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Agent } from '@/domain/real-state/enterprise/entities/agent.entity'
+import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { Agent } from '@/domain/agent/entities/agent.entity'
 
 export class PrismaAgentMapper {
 	static toDomain(raw: PrismaAgent): Agent {

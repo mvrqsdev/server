@@ -1,4 +1,4 @@
-import { Connection } from '@/domain/real-state/enterprise/entities/connection.entity'
+import { Connection } from '@/domain/connection/entities/connection.entity'
 
 export class ConnectionPresenter {
 	static toHTTP(connection: Connection) {

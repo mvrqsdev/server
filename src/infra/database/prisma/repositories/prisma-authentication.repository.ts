@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { AuthenticationRepository } from '@/domain/real-state/application/repositories/authentication.repository'
-import { Authentication } from '@/domain/real-state/enterprise/entities/authentication.entity'
+import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { Authentication } from '@/domain/authentication/entities/authentication.entity'
 import { EnvService } from '@/infra/env/env.service'
 import { PrismaAuthenticationMapper } from '../mappers/prisma-authentication.mapper'
 import { PrismaService } from '../prisma.service'

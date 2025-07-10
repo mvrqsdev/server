@@ -87,33 +87,31 @@ model Contact {
   @@map("contacts")
 }
 
-enum LeadStatus {
-  PreService
-  Service
-  Scheduling
-  Visit
-  Folder
-  CreditAnalysis
-  Proposal
-  Contract
-  Off
-  Finished
-}
-
 model Lead {
-  id        String     @id @default(uuid())
+  id        String    @id @default(uuid())
   contactId String
   agentId   String
-  converted Boolean    @default(false)
-  status    LeadStatus @default(PreService)
-  value     Int        @default(0)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime?  @updatedAt
+  converted Boolean   @default(false)
+  status    String
+  value     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
   Contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
   Agent   User    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
   @@map("leads")
+}
+
+model Scheduling {
+  id        String    @id @default(uuid())
+  leadId    String
+  agentId   String
+  scheduled DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("schedulings")
 }
 
 model Message {

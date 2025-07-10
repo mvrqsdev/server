@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { AgentRepository } from '@/domain/real-state/application/repositories/agent.repository'
-import { Agent } from '@/domain/real-state/enterprise/entities/agent.entity'
+import { AgentRepository } from '@/application/repositories/agents/agent.repository'
+import { Agent } from '@/domain/agent/entities/agent.entity'
 import { PrismaAgentMapper } from '../mappers/prisma-agent.mapper'
 import { PrismaService } from '../prisma.service'
 

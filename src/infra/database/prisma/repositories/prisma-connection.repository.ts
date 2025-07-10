@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ConnectionRepository } from '@/domain/real-state/application/repositories/connection.repository'
-import { Connection } from '@/domain/real-state/enterprise/entities/connection.entity'
+import { ConnectionRepository } from '@/application/repositories/connection/connection.repository'
+import { Connection } from '@/domain/connection/entities/connection.entity'
 import { PrismaConnectionMapper } from '../mappers/prisma-connection.mapper'
 import { PrismaService } from '../prisma.service'
 

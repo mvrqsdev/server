@@ -1,8 +1,8 @@
 import { Prisma, Connection as PrismaConnection } from '@prisma/client'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Connection } from '@/domain/real-state/enterprise/entities/connection.entity'
-import { InstanceName } from '@/domain/real-state/enterprise/entities/value-objects/instance-name.value-object'
-import { WhatsappNumber } from '@/domain/real-state/enterprise/entities/value-objects/whatsapp-number.value-object'
+import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { WhatsappNumber } from '@/core/value-objects/whatsapp-number.value-object'
+import { Connection } from '@/domain/connection/entities/connection.entity'
+import { InstanceName } from '@/domain/connection/value-objects/instance-name.value-object'
 
 export class PrismaConnectionMapper {
 	static toDomain(raw: PrismaConnection): Connection {

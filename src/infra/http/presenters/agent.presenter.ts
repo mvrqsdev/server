@@ -1,4 +1,4 @@
-import { Agent } from '@/domain/real-state/enterprise/entities/agent.entity'
+import { Agent } from '@/domain/agent/entities/agent.entity'
 
 export class AgentPresenter {
 	static toHTTP(agent: Agent) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { createPrivateKey, createPublicKey, privateDecrypt, publicEncrypt } from 'crypto'
-import { Decrypter } from '@/domain/real-state/application/cryptography/decrypter'
-import { Encrypter } from '@/domain/real-state/application/cryptography/encrypter'
+import { Decrypter } from '@/application/cryptography/decrypter'
+import { Encrypter } from '@/application/cryptography/encrypter'
 import { EnvService } from '../env/env.service'
 
 @Injectable()

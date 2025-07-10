@@ -1,13 +1,24 @@
 import { Injectable } from '@nestjs/common'
-import { LeadRepository } from '@/domain/real-state/application/repositories/lead.repository'
-import { Agent } from '@/domain/real-state/enterprise/entities/agent.entity'
-import { Lead } from '@/domain/real-state/enterprise/entities/lead.entity'
+import { LeadRepository } from '@/application/repositories/leads/lead.repository'
+import { Agent } from '@/domain/agent/entities/agent.entity'
+import { Lead } from '@/domain/lead/entities/lead.entity'
 import { PrismaLeadMapper } from '../mappers/prisma-lead.mapper'
 import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaLeadRepository implements LeadRepository {
 	constructor(private prisma: PrismaService) {}
+	async findCurrentLeads(): Promise<Lead[]> {
+		const leads = await this.prisma.lead.findMany({
+			where: {
+				status: {
+					notIn: ['Off', 'Contract'],
+				},
+			},
+		})
+
+		return leads.map(PrismaLeadMapper.toDomain)
+	}
 	async findById(id: string): Promise<Lead | null> {
 		const lead = await this.prisma.lead.findUnique({
 			where: {

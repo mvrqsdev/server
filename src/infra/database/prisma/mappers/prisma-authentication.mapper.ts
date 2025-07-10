@@ -1,6 +1,6 @@
 import { Prisma, Authentication as PrismaAuthentication } from '@prisma/client'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Authentication } from '@/domain/real-state/enterprise/entities/authentication.entity'
+import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { Authentication } from '@/domain/authentication/entities/authentication.entity'
 
 export class PrismaAuthenticationMapper {
 	static toDomain(raw: PrismaAuthentication): Authentication {
