@@ -1,33 +1,49 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { DomainError } from '@/core/errors/errors/domain.error'
 import { Lead } from '../entities/lead.entity'
-import { ContractState } from './contract-state'
-import { CreditAnalysisState } from './credit-analysis-state'
+import { Contract } from './contract-state'
+import { CreditAnalysis } from './credit-analysis-state'
 import { LeadState } from './lead-state.interface'
 
-export class ProposalState extends LeadState {
-	get name(): string {
-		return 'Proposal'
-	}
-	needToChangeAgent(lead: Lead): boolean {
+export class Proposal implements LeadState {
+	validate(lead: Lead): boolean {
 		if (!lead.updatedAt) return false
 		const dias = 15
-		const hora = 24 * dias
+		const hora = 24
 
 		const now = new Date()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
-		return diffInMs >= hora * 60 * 60 * 1000
+		return diffInMs >= dias * hora * 60 * 60 * 1000
 	}
-
-	changeStatus(lead: Lead, newStatus: LeadState): LeadState {
-		if (newStatus instanceof CreditAnalysisState) {
-			return newStatus
-		}
-
-		if (newStatus instanceof ContractState) {
-			return newStatus
-		}
-
-		throw new DomainError('The Lead is still in the proposal status.')
+	get state(): string {
+		return this.constructor.name
+	}
+	PreService(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PRE_SERVICE.DEFAULT)
+	}
+	Service(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SERVICE.DEFAULT)
+	}
+	Scheduling(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SCHEDULING.DEFAULT)
+	}
+	Visit(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.VISIT.DEFAULT)
+	}
+	Folder(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FOLDER.DEFAULT)
+	}
+	CreditAnalysis(lead: Lead): void {
+		lead.status = new CreditAnalysis()
+	}
+	Proposal(lead: Lead): void {
+		lead.status = new Proposal()
+	}
+	Contract(lead: Lead): void {
+		lead.status = new Contract()
+	}
+	Off(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.OFF.DEFAULT)
 	}
 }

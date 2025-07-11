@@ -6,17 +6,12 @@ import {
 	HttpCode,
 	Post,
 } from '@nestjs/common'
-import {
-	ApiBody,
-	ApiConflictResponse,
-	ApiCreatedResponse,
-	ApiOperation,
-} from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { NoAgentInRouletteError } from '@/application/services/roulette/errors/no-agent-in-roulette.error'
 import { CreateLeadUseCase } from '@/application/use-cases/leads/create-lead.use-case'
 import { LeadAlreadyExistsError } from '@/application/use-cases/leads/errors/lead-already-exists.error'
+import { Roles } from '@/infra/authorization/roles.decorator'
 
 const createLeadBodySchema = z.object({
 	name: z.string().describe('Nome do Lead'),
@@ -33,29 +28,7 @@ export class CreateLeadController {
 	constructor(private createLead: CreateLeadUseCase) {}
 
 	@Post()
-	@ApiOperation({
-		operationId: 'createLead',
-		summary: 'Create Lead',
-		description: 'Create a lead with a basic data.',
-		tags: ['Leads'],
-	})
-	@ApiBody({
-		type: CreateLeadDTO,
-		schema: {
-			example: {
-				name: 'João da Silva',
-				email: 'joao@email.com',
-				whatsappNumber: '+5551999490880',
-			},
-		},
-	})
-	@ApiCreatedResponse({
-		description: 'Lead cadastrado com sucesso.',
-	})
-
-	@ApiConflictResponse({
-		description: 'Conflito nos dados informados.',
-	})
+	@Roles('Admin', 'Marketing')
 	@UseZodGuard('body', createLeadBodySchema)
 	@HttpCode(201)
 	async handle(@Body() body: CreateLeadBodySchema) {

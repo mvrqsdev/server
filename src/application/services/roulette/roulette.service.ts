@@ -26,7 +26,6 @@ export class RouletteService {
 		}
 
 		if (adminAgents.length > 0) {
-			// fallback: primeiro admin encontrado
 			return adminAgents[0]
 		}
 

@@ -1,0 +1,19 @@
+import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
+import { GetLeadByIdUseCase } from '@/application/use-cases/leads/get-lead-by-id.use-case'
+import { LeadDetailsPresenter } from '../../presenters/lead-details.presenter'
+
+@Controller('/leads/:leadId')
+export class GetLeadByIdController {
+	constructor(private getLeadById: GetLeadByIdUseCase) {}
+
+	@Get()
+	async handle(@Param('leadId') leadId: string) {
+		const result = await this.getLeadById.execute({ leadId })
+
+		if (result.isLeft()) {
+			throw new BadRequestException()
+		}
+
+		return { lead: LeadDetailsPresenter.toHTTP(result.value.lead) }
+	}
+}

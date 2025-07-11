@@ -33,7 +33,7 @@ export class CreateAgentUseCase {
 		const agentWithSameEmail = await this.agentRepository.findByEmail(email)
 
 		if (agentWithSameEmail) {
-			return left(new AgentAlreadyExistsError(email))
+			return left(new AgentAlreadyExistsError())
 		}
 
 		const hashedPassword = await this.hashGenerator.hash(password)

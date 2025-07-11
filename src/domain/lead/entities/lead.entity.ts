@@ -2,7 +2,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { LeadState } from '../states/lead-state.interface'
-import { PreServiceState } from '../states/pre-service-state'
+import { PreService } from '../states/pre-service-state'
 import { LeadScheduling } from './lead-scheduling.watched-list'
 
 export interface LeadProps {
@@ -30,9 +30,44 @@ export class Lead extends AggregateRoot<LeadProps> {
 	}
 
 	set status(status: LeadState) {
-		const newStatus = this.status.changeStatus(this, status)
-		this.props.status = newStatus
+		this.props.status = status
 		this.touch()
+	}
+
+	public PreService() {
+		this.status.PreService(this)
+	}
+
+	public Service() {
+		this.status.Service(this)
+	}
+
+	public Scheduling() {
+		this.status.Scheduling(this)
+	}
+
+	public Visit() {
+		this.status.Visit(this)
+	}
+
+	public Folder() {
+		this.status.Folder(this)
+	}
+
+	public CreditAnalysis() {
+		this.status.CreditAnalysis(this)
+	}
+
+	public Proposal() {
+		this.status.Proposal(this)
+	}
+
+	public Contract() {
+		this.status.Contract(this)
+	}
+
+	public Off() {
+		this.status.Off(this)
 	}
 
 	get schedulings() {
@@ -57,11 +92,6 @@ export class Lead extends AggregateRoot<LeadProps> {
 		return this.props.contactId
 	}
 
-	set contactId(id: UniqueEntityID) {
-		this.props.contactId = id
-		this.touch()
-	}
-
 	get converted() {
 		return this.props.converted
 	}
@@ -81,7 +111,7 @@ export class Lead extends AggregateRoot<LeadProps> {
 	}
 
 	verifyLeadToNewAgent(): boolean {
-		return this.status.needToChangeAgent(this)
+		return this.status.validate(this)
 	}
 
 	private touch() {
@@ -101,7 +131,7 @@ export class Lead extends AggregateRoot<LeadProps> {
 				schedulings: props.schedulings ?? new LeadScheduling(),
 				value: props.value ?? 0,
 				converted: props.converted ?? false,
-				status: props.status ?? new PreServiceState(),
+				status: props.status ?? new PreService(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

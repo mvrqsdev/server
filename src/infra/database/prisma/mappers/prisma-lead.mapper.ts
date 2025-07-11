@@ -25,7 +25,7 @@ export class PrismaLeadMapper {
 			agentId: lead.agentId.toString(),
 			contactId: lead.contactId.toString(),
 			converted: lead.converted,
-			status: lead.status.name,
+			status: lead.status.state,
 			value: lead.value,
 			createdAt: lead.createdAt,
 			updatedAt: lead.updatedAt,

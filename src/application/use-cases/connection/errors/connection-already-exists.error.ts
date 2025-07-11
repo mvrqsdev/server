@@ -1,7 +1,8 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { UseCaseError } from '@/core/errors/use-case-error'
 
 export class ConnectionAlreadyExistsError extends Error implements UseCaseError {
-	constructor(identifier: string) {
-		super(`${identifier}'s connection already exists.`)
+	constructor() {
+		super(ErrorCodes.CONNECTION.ALREADY_EXISTS)
 	}
 }

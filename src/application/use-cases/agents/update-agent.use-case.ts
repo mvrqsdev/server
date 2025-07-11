@@ -10,11 +10,11 @@ export interface UpdateAgentUseCaseRequest {
 	agentId: string
 	name: string
 	email: string
-	password: string
-	master: boolean
-	role: 'Admin' | 'Marketing' | 'Agent'
-	isInRotation: boolean
-	status: 'Active' | 'Inactive'
+	password?: string
+	master?: boolean
+	role?: 'Admin' | 'Marketing' | 'Agent'
+	isInRotation?: boolean
+	status?: 'Active' | 'Inactive'
 }
 
 type UpdateAgentUseCaseResponse = Either<ResourceNotFoundError, { agent: Agent }>
@@ -44,17 +44,19 @@ export class UpdateAgentUseCase {
 		const agentWithSameEmail = await this.agentRepository.findByEmail(email)
 
 		if (agentWithSameEmail && agentWithSameEmail.id.toString() !== agentId) {
-			return left(new AgentAlreadyExistsError(email))
+			return left(new AgentAlreadyExistsError())
 		}
 
-		const hashedPassword = await this.hashGenerator.hash(password)
+		const hashedPassword = password
+			? await this.hashGenerator.hash(password)
+			: agent.password
 		agent.name = name
 		agent.email = email
 		agent.password = hashedPassword
-		agent.role = role
-		agent.master = master
-		agent.isInRotation = isInRotation
-		agent.status = status
+		agent.role = role ?? agent.role
+		agent.master = master ?? agent.master
+		agent.isInRotation = isInRotation ?? agent.isInRotation
+		agent.status = status ?? agent.status
 
 		await this.agentRepository.save(agent)
 

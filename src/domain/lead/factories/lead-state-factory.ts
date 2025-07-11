@@ -1,53 +1,56 @@
+import { Injectable } from '@nestjs/common'
+import { ErrorCodes } from '@/core/errors/codes'
 import { DomainError } from '@/core/errors/errors/domain.error'
-import { ContractState } from '../states/contract-state'
-import { CreditAnalysisState } from '../states/credit-analysis-state'
-import { FolderState } from '../states/folder-state'
+import { Contract } from '../states/contract-state'
+import { CreditAnalysis } from '../states/credit-analysis-state'
+import { Folder } from '../states/folder-state'
 import { LeadState } from '../states/lead-state.interface'
-import { OffState } from '../states/off-state'
-import { PreServiceState } from '../states/pre-service-state'
-import { ProposalState } from '../states/proposal-state'
-import { SchedulingState } from '../states/scheduling-state'
-import { ServiceState } from '../states/service-state'
-import { VisitState } from '../states/visit-state'
+import { Off } from '../states/off-state'
+import { PreService } from '../states/pre-service-state'
+import { Proposal } from '../states/proposal-state'
+import { Scheduling } from '../states/scheduling-state'
+import { Service } from '../states/service-state'
+import { Visit } from '../states/visit-state'
 
+@Injectable()
 export class LeadStateFactory {
 	static create(status: string): LeadState {
 		if (status === 'PreService') {
-			return new PreServiceState()
+			return new PreService()
 		}
 
 		if (status === 'Service') {
-			return new ServiceState()
+			return new Service()
 		}
 
 		if (status === 'Scheduling') {
-			return new SchedulingState()
+			return new Scheduling()
 		}
 
 		if (status === 'Visit') {
-			return new VisitState()
+			return new Visit()
 		}
 
 		if (status === 'Folder') {
-			return new FolderState()
+			return new Folder()
 		}
 
 		if (status === 'CreditAnalysis') {
-			return new CreditAnalysisState()
+			return new CreditAnalysis()
 		}
 
 		if (status === 'Proposal') {
-			return new ProposalState()
+			return new Proposal()
 		}
 
 		if (status === 'Contract') {
-			return new ContractState()
+			return new Contract()
 		}
 
 		if (status === 'Off') {
-			return new OffState()
+			return new Off()
 		}
 
-		throw new DomainError('Lead status not found.')
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FACTORY.DEFAULT)
 	}
 }

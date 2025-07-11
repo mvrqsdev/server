@@ -1,27 +1,49 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { DomainError } from '@/core/errors/errors/domain.error'
 import { Lead } from '../entities/lead.entity'
 import { LeadState } from './lead-state.interface'
-import { ServiceState } from './service-state'
+import { Service } from './service-state'
 
-export class PreServiceState extends LeadState {
-	needToChangeAgent(lead: Lead): boolean {
+export class PreService implements LeadState {
+	get state(): string {
+		return this.constructor.name
+	}
+	validate(lead: Lead): boolean {
 		if (!lead.updatedAt) return false
 		const dias = 1
-		const hora = 1 * dias
+		const hora = 1
 
 		const now = new Date()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
-		return diffInMs >= hora * 60 * 60 * 1000
+		return diffInMs >= dias * hora * 60 * 60 * 1000
 	}
-	get name(): string {
-		return 'PreService'
+	PreService(lead: Lead): void {
+		lead.status = new PreService()
 	}
-	changeStatus(lead: Lead, newStatus: LeadState): LeadState {
-		if (newStatus instanceof ServiceState) {
-			return newStatus
-		}
 
-		throw new DomainError('The lead already in the PreService.')
+	Service(lead: Lead): void {
+		lead.status = new Service()
+	}
+	Scheduling(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SCHEDULING.DEFAULT)
+	}
+	Visit(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.VISIT.DEFAULT)
+	}
+	Folder(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FOLDER.DEFAULT)
+	}
+	CreditAnalysis(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CREDIT_ANALYSIS.DEFAULT)
+	}
+	Proposal(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PROPOSAL.DEFAULT)
+	}
+	Contract(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CONTRACT.DEFAULT)
+	}
+	Off(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.OFF.DEFAULT)
 	}
 }

@@ -1,7 +1,8 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { UseCaseError } from '@/core/errors/use-case-error'
 
 export class AgentAlreadyExistsError extends Error implements UseCaseError {
-	constructor(identifier: string) {
-		super(`Agent "${identifier}" already exists.`)
+	constructor() {
+		super(ErrorCodes.AGENT.ALREADY_EXISTS)
 	}
 }

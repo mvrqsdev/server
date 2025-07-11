@@ -48,7 +48,7 @@ export class CreateConnectionUseCase {
 			await this.connectionRepository.findByAgentId(agentId)
 
 		if (connectionWithSameAgentId) {
-			return left(new ConnectionAlreadyExistsError(agent.name))
+			return left(new ConnectionAlreadyExistsError())
 		}
 
 		const connection = Connection.create({

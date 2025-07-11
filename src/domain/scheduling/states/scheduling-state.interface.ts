@@ -1,6 +1,10 @@
 import { Scheduling } from '../entities/scheduling.entity'
 
 export abstract class SchedulingState {
-	abstract changeStatus(scheduling: Scheduling, status: SchedulingState): SchedulingState
-	abstract get name(): string
+	public get state() {
+		return this.constructor.name
+	}
+
+	abstract Scheduled(scheduling: Scheduling): void
+	abstract Visited(scheduling: Scheduling): void
 }

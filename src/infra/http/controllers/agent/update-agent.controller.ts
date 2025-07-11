@@ -7,17 +7,14 @@ import {
 	Param,
 	Put,
 } from '@nestjs/common'
-import { ApiBody, ApiOperation } from '@nestjs/swagger'
-import { createZodDto } from 'nestjs-zod'
+import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { AgentAlreadyExistsError } from '@/application/use-cases/agents/errors/agent-already-exists.error'
 import { UpdateAgentUseCase } from '@/application/use-cases/agents/update-agent.use-case'
-import { ZodValidationPipe } from '../../pipes/zod-validation.pipe'
 
 const updateAgentBodySchema = z.object({
 	name: z.string().describe('Nome do Agente no Sistema.'),
 	email: z.string().describe('Nome de usuário no sistema'),
-	password: z.string(),
 	role: z.enum(['Admin', 'Marketing', 'Agent']),
 	isInRotation: z.boolean().optional().default(false),
 	master: z.boolean().optional().default(false),
@@ -26,8 +23,6 @@ const updateAgentBodySchema = z.object({
 
 type UpdateAgentBodySchema = z.infer<typeof updateAgentBodySchema>
 
-const bodyValidationPipe = new ZodValidationPipe(updateAgentBodySchema)
-
 export class UpdateAgentDTO extends createZodDto(updateAgentBodySchema) {}
 
 @Controller('/agents/:id')
@@ -35,26 +30,14 @@ export class UpdateAgentController {
 	constructor(private updateAgent: UpdateAgentUseCase) {}
 
 	@Put()
-	@ApiOperation({
-		operationId: 'updateAgent',
-		summary: 'Update Agent',
-		description: 'Update a agent in the system.',
-		tags: ['Agents'],
-	})
-	@ApiBody({
-		type: UpdateAgentDTO,
-	})
+	@UseZodGuard('body', updateAgentBodySchema)
 	@HttpCode(204)
-	async handle(
-		@Body(bodyValidationPipe) body: UpdateAgentBodySchema,
-		@Param('id') id: string,
-	) {
-		const { name, email, password, role, master, isInRotation, status } = body
+	async handle(@Body() body: UpdateAgentBodySchema, @Param('id') id: string) {
+		const { name, email, role, master, isInRotation, status } = body
 		const result = await this.updateAgent.execute({
 			agentId: id,
 			name,
 			email,
-			password,
 			role,
 			isInRotation,
 			master,

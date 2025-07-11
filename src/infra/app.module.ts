@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { AuthenticationModule } from './authentication/authentication.module'
+import { AuthorizationModule } from './authorization/authorization.module'
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
 import { HttpModule } from './http/http.module'
 import { QueueModule } from './queues/queue.module'
-import { RouletteQueueModule } from './queues/roulette/roulette-queue.module'
 
 @Module({
 	imports: [
@@ -14,6 +14,7 @@ import { RouletteQueueModule } from './queues/roulette/roulette-queue.module'
 			isGlobal: true,
 		}),
 		AuthenticationModule,
+		AuthorizationModule,
 		HttpModule,
 		EnvModule,
 		QueueModule,

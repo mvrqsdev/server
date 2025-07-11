@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/noUnusedVariables: <explanation> */
 export abstract class WatchedList<T> {
 	public currentItems: T[]
 	private initial: T[]
@@ -15,6 +16,22 @@ export abstract class WatchedList<T> {
 
 	public getItems(): T[] {
 		return this.currentItems
+	}
+
+	public getUpdatedItems(): T[] {
+		return this.currentItems.filter((currentItem) => {
+			const initialItem = this.initial.find((initItem) =>
+				this.compareItems(initItem, currentItem),
+			)
+			if (!initialItem) return false
+
+			const clean = (obj: T) => {
+				const { updatedAt, createdAt, ...rest } = obj as any
+				return rest
+			}
+
+			return JSON.stringify(clean(initialItem)) !== JSON.stringify(clean(currentItem))
+		})
 	}
 
 	public getNewItems(): T[] {

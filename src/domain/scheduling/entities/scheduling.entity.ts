@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
-import { ScheduledState } from '../states/scheduled-scheduling-status'
+import { Scheduled } from '../states/scheduled-status'
 import { SchedulingState } from '../states/scheduling-state.interface'
 
 export interface SchedulingProps {
@@ -45,8 +45,7 @@ export class Scheduling extends AggregateRoot<SchedulingProps> {
 	}
 
 	set status(status: SchedulingState) {
-		const newStatus = this.status.changeStatus(this, status)
-		this.props.status = newStatus
+		this.status[status.state]()
 		this.touch()
 	}
 
@@ -70,7 +69,7 @@ export class Scheduling extends AggregateRoot<SchedulingProps> {
 		const scheduling = new Scheduling(
 			{
 				...props,
-				status: props.status ?? new ScheduledState(),
+				status: props.status ?? new Scheduled(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

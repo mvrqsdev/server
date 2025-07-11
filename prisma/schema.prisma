@@ -33,6 +33,7 @@ model User {
   Leads        Lead[]
   LeadsMessage Message[]
   Connection   Connection?
+  Schedulings  Scheduling[]
 
   @@map("users")
 }
@@ -97,8 +98,10 @@ model Lead {
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
-  Contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  Agent   User    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  Agent       User         @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Schedulings Scheduling[]
+  Messages    Message[]
 
   @@map("leads")
 }
@@ -108,8 +111,12 @@ model Scheduling {
   leadId    String
   agentId   String
   scheduled DateTime
+  status    String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
+
+  Lead  Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
   @@map("schedulings")
 }
@@ -126,6 +133,7 @@ model Message {
   updatedAt   DateTime? @updatedAt
 
   Agent User? @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Lead  Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }

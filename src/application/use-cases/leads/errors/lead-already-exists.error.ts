@@ -1,7 +1,8 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { UseCaseError } from '@/core/errors/use-case-error'
 
 export class LeadAlreadyExistsError extends Error implements UseCaseError {
-	constructor(identifier: string) {
-		super(`Lead from "${identifier}" already exists.`)
+	constructor() {
+		super(ErrorCodes.LEAD.ALREADY_EXISTS)
 	}
 }

@@ -1,41 +1,49 @@
+import { ErrorCodes } from '@/core/errors/codes'
 import { DomainError } from '@/core/errors/errors/domain.error'
-import { ScheduledState } from '@/domain/scheduling/states/scheduled-scheduling-status'
 import { Lead } from '../entities/lead.entity'
-import { CreditAnalysisState } from './credit-analysis-state'
+import { CreditAnalysis } from './credit-analysis-state'
 import { LeadState } from './lead-state.interface'
-import { VisitState } from './visit-state'
+import { Visit } from './visit-state'
 
-export class FolderState extends LeadState {
-	get name(): string {
-		return 'Folder'
-	}
-	needToChangeAgent(lead: Lead): boolean {
+export class Folder implements LeadState {
+	validate(lead: Lead): boolean {
 		if (!lead.updatedAt) return false
 		const dias = 7
-		const hora = 24 * dias
+		const hora = 24
 
 		const now = new Date()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
-		return diffInMs >= hora * 60 * 60 * 1000
+		return diffInMs >= dias * hora * 60 * 60 * 1000
 	}
-
-	changeStatus(lead: Lead, newStatus: LeadState): LeadState {
-		if (newStatus instanceof VisitState) {
-			const schedulings = lead.schedulings.getItems()
-			const hasSchedulings = schedulings.some(
-				(scheduling) => scheduling.status instanceof ScheduledState,
-			)
-
-			if (hasSchedulings) {
-				return newStatus
-			}
-		}
-
-		if (newStatus instanceof CreditAnalysisState) {
-			return newStatus
-		}
-
-		throw new DomainError('The Lead is still in the folder status.')
+	get state(): string {
+		return this.constructor.name
+	}
+	PreService(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PRE_SERVICE.DEFAULT)
+	}
+	Service(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SERVICE.DEFAULT)
+	}
+	Scheduling(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SCHEDULING.DEFAULT)
+	}
+	Visit(lead: Lead): void {
+		lead.status = new Visit()
+	}
+	Folder(lead: Lead): void {
+		lead.status = new Folder()
+	}
+	CreditAnalysis(lead: Lead): void {
+		lead.status = new CreditAnalysis()
+	}
+	Proposal(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PROPOSAL.DEFAULT)
+	}
+	Contract(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CONTRACT.DEFAULT)
+	}
+	Off(_: Lead): void {
+		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.OFF.DEFAULT)
 	}
 }

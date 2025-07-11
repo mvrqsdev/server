@@ -9,7 +9,7 @@ import { WhatsappNumber } from '@/core/value-objects/whatsapp-number.value-objec
 import { Agent } from '@/domain/agent/entities/agent.entity'
 import { Contact } from '@/domain/contact/entities/contact.entity'
 import { Lead } from '@/domain/lead/entities/lead.entity'
-import { OffState } from '@/domain/lead/states/off-state'
+import { Off } from '@/domain/lead/states/off-state'
 import { LeadAlreadyExistsError } from './errors/lead-already-exists.error'
 import { LeadNotFoundError } from './errors/lead-not-found.error'
 
@@ -74,11 +74,11 @@ export class CreateLeadUseCase {
 		)
 
 		if (!lastLeadFromContact) {
-			return left(new LeadNotFoundError(contact.name))
+			return left(new LeadNotFoundError())
 		}
 
-		if (!(lastLeadFromContact.status instanceof OffState)) {
-			return left(new LeadAlreadyExistsError(contact.name))
+		if (!(lastLeadFromContact.status instanceof Off)) {
+			return left(new LeadAlreadyExistsError())
 		}
 
 		const lead = Lead.create({ contactId: contact.id, agentId: nextAgent.id })
