@@ -5,7 +5,7 @@ export class ConnectionPresenter {
 		return {
 			id: connection.id.toString(),
 			name: connection.name.value,
-			whatsappNumber: connection.whatsappNumber.whatsappId,
+			whatsappNumber: connection.whatsappNumber.number,
 			token: connection.token.toString(),
 			agentId: connection.agentId.toString(),
 			status: connection.status,

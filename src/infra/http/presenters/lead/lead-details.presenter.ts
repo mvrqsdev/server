@@ -1,7 +1,7 @@
 import { LeadDetails } from '@/domain/lead/value-objects/lead-datails.value-object'
-import { AgentPresenter } from './agent.presenter'
-import { ContactPresenter } from './contact.presenter'
-import { SchedulingPresenter } from './scheduling.presenter'
+import { AgentPresenter } from '../agent/agent.presenter'
+import { ContactPresenter } from '../contact/contact.presenter'
+import { SchedulingPresenter } from '../scheduling/scheduling.presenter'
 
 export class LeadDetailsPresenter {
 	static toHTTP(leadDetails: LeadDetails) {

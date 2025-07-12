@@ -8,6 +8,7 @@ export const envSchema = z.object({
 	EVOLUTION_API_KEY: z.string(),
 	AUTH_PRIVATE_KEY: z.string(),
 	AUTH_PUBLIC_KEY: z.string(),
+	AUTH_COOKIE_NAME: z.string().default('sessionId'),
 	AUTH_EXPIRATION_DAYS: z.coerce.number().optional().default(7),
 })
 

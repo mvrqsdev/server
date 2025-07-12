@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { IEnvService } from '@/core/repositories/env-service.interface'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
-import { EnvService } from '@/infra/env/env.service'
 import { PrismaAuthenticationMapper } from '../mappers/prisma-authentication.mapper'
 import { PrismaService } from '../prisma.service'
 
@@ -9,7 +9,7 @@ import { PrismaService } from '../prisma.service'
 export class PrismaAuthenticationRepository implements AuthenticationRepository {
 	constructor(
 		private prisma: PrismaService,
-		private envService: EnvService,
+		private envService: IEnvService,
 	) {}
 
 	async findById(id: string): Promise<Authentication | null> {

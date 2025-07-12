@@ -14,7 +14,6 @@ import { AgentIsInactiveError } from '@/application/use-cases/agents/errors/agen
 import { AgentNotFoundError } from '@/application/use-cases/agents/errors/agent-not-found.error'
 import { CreateAuthenticationUseCase } from '@/application/use-cases/authentication/create-authentication.use-case'
 import { Public } from '@/infra/authentication/public'
-import { Roles } from '@/infra/authorization/roles.decorator'
 
 const createApiKeyBodySchema = z.object({
 	agentId: z.string().uuid(),
@@ -25,7 +24,7 @@ type CreateAgentBodySchema = z.infer<typeof createApiKeyBodySchema>
 
 export class CreateApiKeyDTO extends createZodDto(createApiKeyBodySchema) {}
 
-@Controller('/api-keys')
+@Controller('/auth/api-keys')
 export class CreateApiKeyController {
 	constructor(private createAuthentication: CreateAuthenticationUseCase) {}
 

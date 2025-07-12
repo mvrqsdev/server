@@ -1,12 +1,30 @@
 import { Injectable } from '@nestjs/common'
 import { AgentRepository } from '@/application/repositories/agents/agent.repository'
 import { Agent } from '@/domain/agent/entities/agent.entity'
+import { AgentDetails } from '@/domain/agent/value-objects/agent-details.value-object'
 import { PrismaAgentMapper } from '../mappers/prisma-agent.mapper'
+import { PrismaAgentDetailsMapper } from '../mappers/prisma-agent-details.mapper'
 import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaAgentRepository implements AgentRepository {
 	constructor(private prisma: PrismaService) {}
+	async findDetailsById(id: string): Promise<AgentDetails | null> {
+		const agent = await this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+			include: {
+				Connection: true,
+			},
+		})
+
+		if (!agent) {
+			return null
+		}
+
+		return PrismaAgentDetailsMapper.toDomain(agent)
+	}
 	async findAdmins(): Promise<Agent[]> {
 		const agents = await this.prisma.user.findMany({
 			where: {

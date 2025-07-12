@@ -1,15 +1,15 @@
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
+import { IEnvService } from '@/core/repositories/env-service.interface'
 import { EnvModule } from '../env/env.module'
-import { EnvService } from '../env/env.service'
 import { RouletteQueueModule } from './roulette/roulette-queue.module'
 
 @Module({
 	imports: [
 		BullModule.forRootAsync({
 			imports: [EnvModule],
-			inject: [EnvService],
-			useFactory: async (envService: EnvService) => ({
+			inject: [IEnvService],
+			useFactory: async (envService: IEnvService) => ({
 				connection: {
 					url: envService.get('REDIS_URI'),
 				},

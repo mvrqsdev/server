@@ -13,7 +13,7 @@ import { CreateConnectionUseCase } from '@/application/use-cases/connection/crea
 import { ConnectionAlreadyExistsError } from '@/application/use-cases/connection/errors/connection-already-exists.error'
 import { EvolutionInternalError } from '@/application/webservice/evolution/errors/EvolutionInternal.error'
 import { Roles } from '@/infra/authorization/roles.decorator'
-import { ConnectionPresenter } from '../../presenters/connection.presenter'
+import { ConnectionPresenter } from '../../presenters/connection/connection.presenter'
 
 const createConnectionBodySchema = z.object({
 	agentId: z.string().uuid(),

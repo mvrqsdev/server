@@ -2,10 +2,11 @@
 import {
 	CanActivate,
 	ExecutionContext,
-	ForbiddenException,
 	Injectable,
+	UnauthorizedException,
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { ErrorCodes } from '@/core/errors/codes'
 import { ROLES_KEY } from './roles.decorator'
 
 type roles = 'Admin' | 'Marketing' | 'Agent'
@@ -28,11 +29,17 @@ export class RolesGuard implements CanActivate {
 		const agent = request.agent
 
 		if (!agent) {
-			throw new ForbiddenException('Agente não autenticado')
+			throw new UnauthorizedException({
+				statusCode: 401,
+				message: ErrorCodes.AUTHORIZATION.UNAUTHORIZED,
+			})
 		}
 
 		if (!requiredRoles.includes(agent.role)) {
-			throw new ForbiddenException('Unauthorized.')
+			throw new UnauthorizedException({
+				statusCode: 401,
+				message: ErrorCodes.AUTHORIZATION.UNAUTHORIZED,
+			})
 		}
 
 		return true

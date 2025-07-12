@@ -1,17 +1,17 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { apiReference } from '@scalar/nestjs-api-reference'
-// import cookieParser from 'cookie-parser'
+import * as cookieParser from 'cookie-parser'
 import { patchNestJsSwagger } from 'nestjs-zod'
+import { IEnvService } from '@/core/repositories/env-service.interface'
 import { AppModule } from './app.module'
-import { EnvService } from './env/env.service'
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule)
-	const configService = app.get(EnvService)
+	const app = await NestFactory.create(AppModule, {})
+	const configService = app.get(IEnvService)
 	const port = configService.get('PORT')
 
-	// app.use(cookieParser())
+	app.use(cookieParser())
 	patchNestJsSwagger()
 	const config = new DocumentBuilder()
 		.setTitle('Orbita API')

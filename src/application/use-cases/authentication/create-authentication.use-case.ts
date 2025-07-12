@@ -5,6 +5,7 @@ import { FailedToEncryptError } from '@/application/cryptography/errors/failed-t
 import { AgentRepository } from '@/application/repositories/agents/agent.repository'
 import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
 import { Either, left, right } from '@/core/either'
+import { IEnvService } from '@/core/repositories/env-service.interface'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
 import { AgentIsInactiveError } from '../agents/errors/agent-is-inactive.error'
 import { AgentNotFoundError } from '../agents/errors/agent-not-found.error'
@@ -26,6 +27,7 @@ type CreateAuthenticationUseCaseResponse = Either<
 @Injectable()
 export class CreateAuthenticationUseCase {
 	constructor(
+		private envService: IEnvService,
 		private authenticationRepository: AuthenticationRepository,
 		private agentRepository: AgentRepository,
 		private encrypter: Encrypter,
@@ -49,6 +51,9 @@ export class CreateAuthenticationUseCase {
 			return left(new AgentIsInactiveError())
 		}
 		const token = strategy === 'ApiKey' ? `sk_${v4()}` : v4()
+		const expirationDays = this.envService.get('AUTH_EXPIRATION_DAYS')
+		const newExpirationDate = new Date()
+		newExpirationDate.setDate(newExpirationDate.getDate() + expirationDays)
 
 		const authentication = Authentication.create({
 			strategy,
@@ -56,7 +61,7 @@ export class CreateAuthenticationUseCase {
 			agentId: agent.id,
 			ip,
 			userAgent,
-			expiresAt,
+			expiresAt: strategy === 'ApiKey' ? expiresAt : newExpirationDate,
 			revokedAt,
 		})
 

@@ -5,10 +5,11 @@ import { RevokeAuthenticationUseCase } from '@/application/use-cases/authenticat
 import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'
+import { EnvModule } from '../env/env.module'
 import { AuthenticationGuard } from './authentication.guard'
 
 @Module({
-	imports: [DatabaseModule, CryptographyModule],
+	imports: [DatabaseModule, CryptographyModule, EnvModule],
 	providers: [
 		GetAuthenticationAndAgentByTokenUseCase,
 		UpdateAuthenticationExpirationUseCase,

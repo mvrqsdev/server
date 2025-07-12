@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
 import { EvolutionRepository } from '@/application/webservice/evolution/evolution.repository'
+import { IEnvService } from '@/core/repositories/env-service.interface'
 import { EnvModule } from '@/infra/env/env.module'
 import { EnvService } from '@/infra/env/env.service'
 import { EvolutionService } from './evolution.service'
@@ -10,7 +11,7 @@ import { EvolutionService } from './evolution.service'
 		EnvModule,
 		HttpModule.registerAsync({
 			imports: [EnvModule],
-			inject: [EnvService],
+			inject: [IEnvService],
 			useFactory: async (envService: EnvService) => ({
 				baseURL: envService.get('EVOLUTION_ENDPOINT'),
 				headers: {
