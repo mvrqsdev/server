@@ -6,6 +6,7 @@ import {
 	HttpCode,
 	Put,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { AgentAlreadyExistsError } from '@/application/use-cases/agents/errors/agent-already-exists.error'
@@ -24,6 +25,7 @@ type UpdateAgentProfileBodySchema = z.infer<typeof updateAgentProfileBodySchema>
 export class UpdateAgentProfileDTO extends createZodDto(updateAgentProfileBodySchema) {}
 
 @Controller('/profile')
+@ApiTags('Profile')
 export class UpdateAgentProfileController {
 	constructor(private updateAgentProfile: UpdateAgentUseCase) {}
 

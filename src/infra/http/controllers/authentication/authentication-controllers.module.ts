@@ -5,6 +5,7 @@ import { EnvModule } from '@/infra/env/env.module'
 import { WebServiceModule } from '@/infra/webservice/webservice.module'
 import { UseCasesModule } from '../../use-cases/use-cases.module'
 import { AuthenticationLoginController } from './authentication-login.controller'
+import { AuthenticationLogoutController } from './authentication-logout.controller'
 import { CreateApiKeyController } from './create-api-key.controller'
 
 @Module({
@@ -15,6 +16,10 @@ import { CreateApiKeyController } from './create-api-key.controller'
 		CryptographyModule,
 		UseCasesModule,
 	],
-	controllers: [CreateApiKeyController, AuthenticationLoginController],
+	controllers: [
+		CreateApiKeyController,
+		AuthenticationLoginController,
+		AuthenticationLogoutController,
+	],
 })
 export class AuthenticationControllersModule {}

@@ -32,7 +32,7 @@ model User {
 
   Leads        Lead[]
   LeadsMessage Message[]
-  Connection   Connection?
+  Connection   Connection[]
   Schedulings  Scheduling[]
 
   @@map("users")
@@ -56,20 +56,17 @@ model Authentication {
   updatedAt DateTime?              @updatedAt
 }
 
-enum ConnectionStatus {
-  Active
-  Inactive
-}
-
 model Connection {
-  id        String           @id @default(uuid())
-  name      String           @unique
-  number    String
-  token     String
-  agentId   String           @unique
-  status    ConnectionStatus @default(Active)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime?        @updatedAt
+  id         String    @id @default(uuid())
+  name       String    @unique
+  number     String    @unique
+  instanceId String
+  status     String
+  token      String
+  principal  Boolean
+  agentId    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
 
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 

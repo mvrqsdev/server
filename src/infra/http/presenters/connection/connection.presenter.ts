@@ -4,11 +4,13 @@ export class ConnectionPresenter {
 	static toHTTP(connection: Connection) {
 		return {
 			id: connection.id.toString(),
-			name: connection.name.value,
-			whatsappNumber: connection.whatsappNumber.number,
+			name: connection.name.toString(),
+			number: connection.number.number,
+			instanceId: connection.instanceId.toString(),
+			status: connection.status.state,
 			token: connection.token.toString(),
+			principal: connection.principal,
 			agentId: connection.agentId.toString(),
-			status: connection.status,
 			createdAt: connection.createdAt,
 			updatedAt: connection.updatedAt,
 		}

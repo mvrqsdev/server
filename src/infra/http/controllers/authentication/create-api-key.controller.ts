@@ -6,6 +6,7 @@ import {
 	Post,
 	Req,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
@@ -25,6 +26,7 @@ type CreateAgentBodySchema = z.infer<typeof createApiKeyBodySchema>
 export class CreateApiKeyDTO extends createZodDto(createApiKeyBodySchema) {}
 
 @Controller('/auth/api-keys')
+@ApiTags('API Keys')
 export class CreateApiKeyController {
 	constructor(private createAuthentication: CreateAuthenticationUseCase) {}
 

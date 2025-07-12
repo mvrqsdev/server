@@ -13,9 +13,7 @@ export class AgentDetailsPresenter {
 			status: agentDetails.status,
 			createdAt: agentDetails.createdAt,
 			updatedAt: agentDetails.updatedAt,
-			connection: agentDetails.connection
-				? ConnectionPresenter.toHTTP(agentDetails.connection)
-				: null,
+			connections: agentDetails.connections.map(ConnectionPresenter.toHTTP),
 		}
 	}
 }

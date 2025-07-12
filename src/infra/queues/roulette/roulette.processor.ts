@@ -10,15 +10,15 @@ export class RouletteProcessor extends WorkerHost {
 	}
 
 	async process(job: Job, token?: string): Promise<any> {
-		console.log('[Roulette] => Iniciando processamento dos leads.')
+		// console.log('[Roulette] => Iniciando processamento dos leads.')
 		const result = await this.updateInactiveLeadAgent.execute()
 
 		if (result.isLeft()) {
-			console.log('[Roulette] => Nenhum agente disponivel na roleta.')
+			// console.log('[Roulette] => Nenhum agente disponivel na roleta.')
 		}
 
 		if (result.isRight()) {
-			console.log('[Roulette] => Todos as Leads foram processadas.')
+			// console.log('[Roulette] => Todos as Leads foram processadas.')
 		}
 	}
 }

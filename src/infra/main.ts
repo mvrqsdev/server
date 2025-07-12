@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core'
+import { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { apiReference } from '@scalar/nestjs-api-reference'
 import * as cookieParser from 'cookie-parser'
@@ -7,11 +8,13 @@ import { IEnvService } from '@/core/repositories/env-service.interface'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, {})
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, {})
 	const configService = app.get(IEnvService)
 	const port = configService.get('PORT')
 
 	app.use(cookieParser())
+	app.useBodyParser('json', { limit: '10mb' })
+	app.set('trust proxy', 1)
 	patchNestJsSwagger()
 	const config = new DocumentBuilder()
 		.setTitle('Orbita API')
@@ -33,6 +36,6 @@ async function bootstrap() {
 		}),
 	)
 
-	await app.listen(port)
+	await app.listen(port, '0.0.0.0')
 }
 bootstrap()

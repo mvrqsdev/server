@@ -2,14 +2,20 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { WhatsappNumber } from '../../../core/value-objects/whatsapp-number.value-object'
+import { Close } from '../states/close-state'
+import { ConnectionState } from '../states/connection-state.interface'
+import { ConnectionToken } from '../value-objects/connection-token.value-object'
 import { InstanceName } from '../value-objects/instance-name.value-object'
+import { InstanceId } from '../value-objects/instanceId.value-object'
 
 export interface ConnectionProps {
 	name: InstanceName
-	whatsappNumber: WhatsappNumber
-	token: UniqueEntityID
+	number: WhatsappNumber
+	instanceId: InstanceId
+	status: ConnectionState
+	token: ConnectionToken
 	agentId: UniqueEntityID
-	status: 'Active' | 'Inactive'
+	principal: boolean
 	createdAt: Date
 	updatedAt?: Date | null
 }
@@ -24,12 +30,25 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		this.touch()
 	}
 
-	get whatsappNumber() {
-		return this.props.whatsappNumber
+	get number() {
+		return this.props.number
 	}
 
-	set whatsappNumber(whatsappNumber: WhatsappNumber) {
-		this.props.whatsappNumber = whatsappNumber
+	set number(number: WhatsappNumber) {
+		this.props.number = number
+		this.touch()
+	}
+
+	get instanceId() {
+		return this.props.instanceId
+	}
+
+	get status() {
+		return this.props.status
+	}
+
+	set status(status: ConnectionState) {
+		this.props.status = status
 		this.touch()
 	}
 
@@ -46,13 +65,8 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		this.touch()
 	}
 
-	get status() {
-		return this.props.status
-	}
-
-	set status(status: 'Active' | 'Inactive') {
-		this.props.status = status
-		this.touch()
+	get principal() {
+		return this.props.principal
 	}
 
 	get createdAt() {
@@ -67,14 +81,28 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		this.props.updatedAt = new Date()
 	}
 
+	public Close() {
+		return this.status.Close(this)
+	}
+	public Connecting() {
+		return this.status.Connecting(this)
+	}
+	public Open() {
+		return this.status.Open(this)
+	}
+	public Inactive() {
+		return this.status.Inactive(this)
+	}
+
 	static create(
-		props: Optional<ConnectionProps, 'createdAt' | 'status'>,
+		props: Optional<ConnectionProps, 'createdAt' | 'status' | 'principal'>,
 		id?: UniqueEntityID,
 	) {
 		const connection = new Connection(
 			{
 				...props,
-				status: props.status ?? 'Active',
+				principal: props.principal ?? false,
+				status: props.status ?? new Close(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

@@ -6,6 +6,7 @@ import {
 	HttpCode,
 	Post,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { NoAgentInRouletteError } from '@/application/services/roulette/errors/no-agent-in-roulette.error'
@@ -24,6 +25,7 @@ type CreateLeadBodySchema = z.infer<typeof createLeadBodySchema>
 export class CreateLeadDTO extends createZodDto(createLeadBodySchema) {}
 
 @Controller('/leads')
+@ApiTags('Leads')
 export class CreateLeadController {
 	constructor(private createLead: CreateLeadUseCase) {}
 

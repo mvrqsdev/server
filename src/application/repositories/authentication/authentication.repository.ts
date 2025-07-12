@@ -6,7 +6,7 @@ export abstract class AuthenticationRepository {
 	abstract updateAuthenticationExpiration(
 		authentication: Authentication,
 	): Promise<Authentication>
-	abstract revokeAuthenticationExpiration(authentication: Authentication): Promise<void>
+	abstract revokeAuthentication(authentication: Authentication): Promise<void>
 	abstract create(authentication: Authentication): Promise<void>
 	abstract save(authentication: Authentication): Promise<void>
 }

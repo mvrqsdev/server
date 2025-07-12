@@ -7,6 +7,7 @@ import {
 	Param,
 	Put,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { LeadNotFoundError } from '@/application/use-cases/leads/errors/lead-not-found.error'
@@ -49,6 +50,7 @@ type UpdateLeadBodySchema = z.infer<typeof updateLeadBodySchema>
 export class UpdateLeadDTO extends createZodDto(updateLeadBodySchema) {}
 
 @Controller('/leads/:leadId')
+@ApiTags('Leads')
 export class UpdateLeadController {
 	constructor(private updateLead: UpdateLeadUseCase) {}
 

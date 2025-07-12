@@ -1,32 +1,21 @@
+import { v4 } from 'uuid'
+
 export class InstanceName {
-	public value: string
+	private value: string
 
-	private constructor(value: string) {
-		this.value = value
+	toString() {
+		return this.value
 	}
 
-	static create(value: string) {
-		return new InstanceName(value)
+	toValue() {
+		return this.value
 	}
 
-	/**
-	 * Receives a string and normalize it as a instancename.
-	 *
-	 * Example: "An example title" => "an-example-title"
-	 *
-	 * @param text {string}
-	 */
-	static createFromText(text: string): InstanceName {
-		const instancenameText = text
-			.normalize('NFKD')
-			.toLowerCase()
-			.trim()
-			.replace(/\s+/g, '-')
-			.replace(/[^\w-]+/g, '')
-			.replace(/_/g, '-')
-			.replace(/--+/g, '-')
-			.replace(/-$/g, '')
+	constructor(value?: string) {
+		this.value = value ?? v4()
+	}
 
-		return new InstanceName(instancenameText)
+	equals(id: InstanceName) {
+		return id.toValue() === this.value
 	}
 }

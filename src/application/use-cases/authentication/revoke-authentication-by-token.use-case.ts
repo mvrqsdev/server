@@ -5,17 +5,17 @@ import { AuthenticationRepository } from '@/application/repositories/authenticat
 import { Either, left, right } from '@/core/either'
 import { AuthenticationNotFoundError } from './errors/authentication-not-found.error'
 
-export interface RevokeAuthenticationUseCaseRequest {
+export interface RevokeAuthenticationByTokenUseCaseRequest {
 	token: string
 }
 
-type RevokeAuthenticationUseCaseResponse = Either<
+type RevokeAuthenticationByTokenUseCaseResponse = Either<
 	FailedToDecryptError | AuthenticationNotFoundError,
 	null
 >
 
 @Injectable()
-export class RevokeAuthenticationUseCase {
+export class RevokeAuthenticationByTokenUseCase {
 	constructor(
 		private authenticationRepository: AuthenticationRepository,
 		private decrypter: Decrypter,
@@ -23,7 +23,7 @@ export class RevokeAuthenticationUseCase {
 
 	async execute({
 		token,
-	}: RevokeAuthenticationUseCaseRequest): Promise<RevokeAuthenticationUseCaseResponse> {
+	}: RevokeAuthenticationByTokenUseCaseRequest): Promise<RevokeAuthenticationByTokenUseCaseResponse> {
 		const decryptedToken = await this.decrypter.decrypt(token)
 
 		if (!decryptedToken) {
@@ -37,9 +37,7 @@ export class RevokeAuthenticationUseCase {
 			return left(new AuthenticationNotFoundError())
 		}
 
-		await this.authenticationRepository.revokeAuthenticationExpiration(
-			authenticationWithSameToken,
-		)
+		await this.authenticationRepository.revokeAuthentication(authenticationWithSameToken)
 
 		return right(null)
 	}

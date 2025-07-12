@@ -12,7 +12,7 @@ export interface AgentDetailsProps {
 	status: 'Active' | 'Inactive'
 	createdAt: Date
 	updatedAt?: Date | null
-	connection?: Connection | null
+	connections: Connection[]
 }
 
 export class AgentDetails extends ValueObject<AgentDetailsProps> {
@@ -52,8 +52,8 @@ export class AgentDetails extends ValueObject<AgentDetailsProps> {
 		return this.props.updatedAt
 	}
 
-	get connection() {
-		return this.props.connection
+	get connections() {
+		return this.props.connections
 	}
 
 	static create(props: AgentDetailsProps) {

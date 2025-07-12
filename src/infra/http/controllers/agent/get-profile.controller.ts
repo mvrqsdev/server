@@ -1,10 +1,12 @@
 import { BadRequestException, Controller, Get, HttpCode } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { GetAgentByIdUseCase } from '@/application/use-cases/agents/get-agent.use-case'
 import { Agent } from '@/domain/agent/entities/agent.entity'
 import { CurrentUser } from '@/infra/authentication/current-user.decorator'
 import { AgentDetailsPresenter } from '../../presenters/agent/agent-details.presenter'
 
 @Controller('/profile')
+@ApiTags('Profile')
 export class GetAgentProfileController {
 	constructor(private getAgentById: GetAgentByIdUseCase) {}
 

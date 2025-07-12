@@ -6,6 +6,7 @@ import { UseCasesModule } from '../../use-cases/use-cases.module'
 import { CreateAgentController } from './create-agent.controller'
 import { GetAgentByIdController } from './get-agent-by-id.controller'
 import { GetAgentProfileController } from './get-profile.controller'
+import { TesteController } from './teste.controller'
 import { UpdateAgentController } from './update-agent.controller'
 import { UpdateAgentProfileController } from './update-profile.controller'
 
@@ -17,6 +18,7 @@ import { UpdateAgentProfileController } from './update-profile.controller'
 		GetAgentProfileController,
 		UpdateAgentController,
 		UpdateAgentProfileController,
+		TesteController,
 	],
 })
 export class AgentControllersModule {}

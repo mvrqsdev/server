@@ -6,6 +6,7 @@ import {
 	HttpCode,
 	Post,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { createZodDto, UseZodGuard } from 'nestjs-zod'
 import { z } from 'zod'
 import { CreateAgentUseCase } from '@/application/use-cases/agents/create-agent.use-case'
@@ -26,6 +27,7 @@ type CreateAgentBodySchema = z.infer<typeof createAgentBodySchema>
 export class CreateAgentDTO extends createZodDto(createAgentBodySchema) {}
 
 @Controller('/agents')
+@ApiTags('Agents')
 export class CreateAgentController {
 	constructor(private createAgent: CreateAgentUseCase) {}
 

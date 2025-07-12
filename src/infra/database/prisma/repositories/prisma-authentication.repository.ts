@@ -58,7 +58,7 @@ export class PrismaAuthenticationRepository implements AuthenticationRepository 
 
 		return PrismaAuthenticationMapper.toDomain(updatedAuthentication)
 	}
-	async revokeAuthenticationExpiration(authentication: Authentication): Promise<void> {
+	async revokeAuthentication(authentication: Authentication): Promise<void> {
 		const data = PrismaAuthenticationMapper.toPrisma(authentication)
 		await this.prisma.authentication.update({
 			where: {

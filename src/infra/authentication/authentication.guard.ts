@@ -1,8 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import {
+	CanActivate,
+	ExecutionContext,
+	Injectable,
+	UnauthorizedException,
+} from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { GetAuthenticationAndAgentByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-and-agent-by-token.use-case'
-import { RevokeAuthenticationUseCase } from '@/application/use-cases/authentication/revoke-authentication.use-case'
+import { RevokeAuthenticationByTokenUseCase } from '@/application/use-cases/authentication/revoke-authentication-by-token.use-case'
 import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
 import { ErrorCodes } from '@/core/errors/codes'
 import { IEnvService } from '@/core/repositories/env-service.interface'
@@ -17,7 +22,7 @@ export class AuthenticationGuard implements CanActivate {
 		private envService: IEnvService,
 		private getAuthenticationAndAgent: GetAuthenticationAndAgentByTokenUseCase,
 		private updateAuthenticationExpiration: UpdateAuthenticationExpirationUseCase,
-		private revokeAuthentication: RevokeAuthenticationUseCase,
+		private revokeAuthentication: RevokeAuthenticationByTokenUseCase,
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -29,7 +34,6 @@ export class AuthenticationGuard implements CanActivate {
 		if (isPublic) return true
 
 		const request = context.switchToHttp().getRequest<Request>()
-		const response = context.switchToHttp().getResponse<Response>()
 		const cookieName = await this.envService.get('AUTH_COOKIE_NAME')
 		const sessionId: string = request.cookies?.[cookieName]
 		const authorizationHeader = request.headers.authorization
@@ -41,28 +45,25 @@ export class AuthenticationGuard implements CanActivate {
 				: null)
 
 		if (!token) {
-			this.sendJsonError(response, 401, ErrorCodes.AUTHENTICATION.UNAUTHORIZED)
-			return false
+			throw new UnauthorizedException({
+				statusCode: 401,
+				message: ErrorCodes.AUTHENTICATION.UNAUTHORIZED,
+			})
 		}
 
 		const result = await this.validate(token)
 
 		if (!result) {
-			this.sendJsonError(response, 401, ErrorCodes.AUTHENTICATION.UNAUTHORIZED)
-			return false
+			throw new UnauthorizedException({
+				statusCode: 401,
+				message: ErrorCodes.AUTHENTICATION.UNAUTHORIZED,
+			})
 		}
 
 		request['agent'] = result.agent
 		request['authentication'] = result.authentication
 
 		return true
-	}
-
-	private sendJsonError(res: Response, statusCode: number, message: string) {
-		res.status(statusCode).json({
-			statusCode,
-			message,
-		})
 	}
 
 	async validate(token: string): Promise<{
@@ -86,6 +87,10 @@ export class AuthenticationGuard implements CanActivate {
 
 		if (authentication.expiresAt && authentication.expiresAt < now) {
 			await this.revokeAuthentication.execute({ token })
+			return null
+		}
+
+		if (authentication.revokedAt && authentication.revokedAt <= now) {
 			return null
 		}
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
 import { GetAuthenticationAndAgentByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-and-agent-by-token.use-case'
-import { RevokeAuthenticationUseCase } from '@/application/use-cases/authentication/revoke-authentication.use-case'
+import { RevokeAuthenticationByTokenUseCase } from '@/application/use-cases/authentication/revoke-authentication-by-token.use-case'
 import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'
@@ -13,7 +13,7 @@ import { AuthenticationGuard } from './authentication.guard'
 	providers: [
 		GetAuthenticationAndAgentByTokenUseCase,
 		UpdateAuthenticationExpirationUseCase,
-		RevokeAuthenticationUseCase,
+		RevokeAuthenticationByTokenUseCase,
 		{
 			provide: APP_GUARD,
 			useClass: AuthenticationGuard,

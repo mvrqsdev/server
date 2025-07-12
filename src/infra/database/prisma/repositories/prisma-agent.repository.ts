@@ -9,6 +9,19 @@ import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaAgentRepository implements AgentRepository {
 	constructor(private prisma: PrismaService) {}
+	async findMaster(): Promise<Agent | null> {
+		const master = await this.prisma.user.findFirst({
+			where: {
+				master: true,
+			},
+		})
+
+		if (!master) {
+			return null
+		}
+
+		return PrismaAgentMapper.toDomain(master)
+	}
 	async findDetailsById(id: string): Promise<AgentDetails | null> {
 		const agent = await this.prisma.user.findUnique({
 			where: {

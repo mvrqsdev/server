@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
-import { EvolutionRepository } from '@/application/webservice/evolution/evolution.repository'
+import { IEvolutionService } from '@/application/webservice/evolution/evolution.service'
 import { IEnvService } from '@/core/repositories/env-service.interface'
 import { EnvModule } from '@/infra/env/env.module'
 import { EnvService } from '@/infra/env/env.service'
@@ -22,10 +22,10 @@ import { EvolutionService } from './evolution.service'
 	],
 	providers: [
 		{
-			provide: EvolutionRepository,
+			provide: IEvolutionService,
 			useClass: EvolutionService,
 		},
 	],
-	exports: [EvolutionRepository],
+	exports: [IEvolutionService],
 })
 export class EvolutionModule {}

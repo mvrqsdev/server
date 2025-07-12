@@ -4,7 +4,7 @@ import { AgentDetails } from '@/domain/agent/value-objects/agent-details.value-o
 import { PrismaConnectionMapper } from './prisma-connection.mapper'
 
 type PrismaAgentDetails = PrismaAgent & {
-	Connection?: PrismaConnection | null
+	Connection: PrismaConnection[]
 }
 
 export class PrismaAgentDetailsMapper {
@@ -17,7 +17,7 @@ export class PrismaAgentDetailsMapper {
 			role: raw.role,
 			master: raw.master,
 			status: raw.status,
-			connection: raw.Connection ? PrismaConnectionMapper.toDomain(raw.Connection) : null,
+			connections: raw.Connection.map(PrismaConnectionMapper.toDomain),
 			createdAt: raw.createdAt,
 			updatedAt: raw.updatedAt,
 		})
