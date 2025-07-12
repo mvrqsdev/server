@@ -48,6 +48,7 @@ export class AuthenticationGuard implements CanActivate {
 			throw new UnauthorizedException({
 				statusCode: 401,
 				message: ErrorCodes.AUTHENTICATION.UNAUTHORIZED,
+				error: 'Unauthorized',
 			})
 		}
 
@@ -57,6 +58,7 @@ export class AuthenticationGuard implements CanActivate {
 			throw new UnauthorizedException({
 				statusCode: 401,
 				message: ErrorCodes.AUTHENTICATION.UNAUTHORIZED,
+				error: 'Unauthorized',
 			})
 		}
 

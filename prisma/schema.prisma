@@ -30,10 +30,11 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime?  @updatedAt
 
-  Leads        Lead[]
-  LeadsMessage Message[]
-  Connection   Connection[]
-  Schedulings  Scheduling[]
+  Leads           Lead[]
+  LeadsMessage    Message[]
+  Connection      Connection[]
+  Schedulings     Scheduling[]
+  Authentications Authentication[]
 
   @@map("users")
 }
@@ -54,6 +55,8 @@ model Authentication {
   revokedAt DateTime?
   createdAt DateTime               @default(now())
   updatedAt DateTime?              @updatedAt
+
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 }
 
 model Connection {
@@ -85,6 +88,29 @@ model Contact {
   @@map("contacts")
 }
 
+model Campaign {
+  id         String    @id @default(uuid())
+  name       String
+  externalId String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  Leads LeadCampaigns[]
+
+  @@map("campaigns")
+}
+
+model LeadCampaigns {
+  leadId     String
+  campaignId String
+  createdAt  DateTime @default(now())
+
+  Lead     Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  Campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@id([leadId, campaignId])
+}
+
 model Lead {
   id        String    @id @default(uuid())
   contactId String
@@ -95,10 +121,11 @@ model Lead {
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
-  Contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  Agent       User         @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Contact     Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  Agent       User            @relation(fields: [agentId], references: [id], onDelete: Cascade)
   Schedulings Scheduling[]
   Messages    Message[]
+  Campaigns   LeadCampaigns[]
 
   @@map("leads")
 }

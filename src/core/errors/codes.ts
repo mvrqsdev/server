@@ -43,6 +43,9 @@ export const ErrorCodes = {
 			},
 		},
 	},
+	CAMPAIGN: {
+		ALREADY_EXISTS: 'CAMPAIGN_ALREADY_EXISTS',
+	},
 	WEBSERVICE: {
 		EVOLUTION: {
 			INTERNAL_ERROR: 'EVOLUTION_INTERNAL_ERROR',
