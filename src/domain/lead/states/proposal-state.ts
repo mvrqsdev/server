@@ -1,3 +1,4 @@
+import { clock } from '@/core/helpers/dayjs'
 import { Lead } from '../entities/lead.entity'
 import { Contract } from './contract-state'
 import { CreditAnalysis } from './credit-analysis-state'
@@ -15,7 +16,7 @@ export class Proposal implements LeadState {
 		const dias = 15
 		const hora = 24
 
-		const now = new Date()
+		const now = clock().toDate()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
 		return diffInMs >= dias * hora * 60 * 60 * 1000

@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { TokenValue } from './value-objects/token-value.value-object'
@@ -40,7 +41,7 @@ export class Token extends AggregateRoot<TokenProps> {
 	}
 
 	public isExpired(): boolean {
-		return new Date() > this.props.expiresAt
+		return clock().toDate() > this.props.expiresAt
 	}
 
 	public isUsed(): boolean {
@@ -50,7 +51,7 @@ export class Token extends AggregateRoot<TokenProps> {
 	public markAsUsed() {
 		if (this.isUsed()) {
 		}
-		this.props.usedAt = new Date()
+		this.props.usedAt = clock().toDate()
 	}
 
 	static create(
@@ -62,7 +63,7 @@ export class Token extends AggregateRoot<TokenProps> {
 				...props,
 				token: props.token ?? new TokenValue(),
 				usedAt: props.usedAt ?? null,
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)

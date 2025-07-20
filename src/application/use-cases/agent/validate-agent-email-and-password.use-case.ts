@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { HashComparer } from '@/application/cryptography/hash-comparer'
 import { AgentValidateStrategy } from '@/application/facades/agent/contract/agent-validate-strategy'
 import { AgentRepository } from '@/application/repositories/agent/agent.repository'
+import { Agent } from '@/domain/agent/entities/agent.entity'
 import { InvalidCredentialsError } from './errors/invalid-credentials.error'
 
 interface ValidateAgentEmailAndPasswordUseCaseRequest {
@@ -9,9 +10,13 @@ interface ValidateAgentEmailAndPasswordUseCaseRequest {
 	password: string
 }
 
+interface ValidateAgentEmailAndPasswordUseCaseResponse {
+	agent: Agent
+}
+
 @Injectable()
 export class ValidateAgentEmailAndPasswordUseCase
-	implements AgentValidateStrategy<ValidateAgentEmailAndPasswordUseCaseRequest, void>
+	implements AgentValidateStrategy<ValidateAgentEmailAndPasswordUseCaseRequest>
 {
 	constructor(
 		private agentRepository: AgentRepository,
@@ -20,7 +25,7 @@ export class ValidateAgentEmailAndPasswordUseCase
 	async validate({
 		email,
 		password,
-	}: ValidateAgentEmailAndPasswordUseCaseRequest): Promise<void> {
+	}: ValidateAgentEmailAndPasswordUseCaseRequest): Promise<ValidateAgentEmailAndPasswordUseCaseResponse> {
 		const agent = await this.agentRepository.findByEmail(email)
 
 		if (!agent) {
@@ -31,6 +36,10 @@ export class ValidateAgentEmailAndPasswordUseCase
 
 		if (!isValidPassword) {
 			throw new InvalidCredentialsError()
+		}
+
+		return {
+			agent,
 		}
 	}
 }

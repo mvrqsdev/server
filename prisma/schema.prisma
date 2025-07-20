@@ -56,7 +56,7 @@ model UserRole {
   createdAt DateTime @default(now())
 
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  Roel  Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  Role  Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([agentId, roleId])
   @@map("user_roles")
@@ -64,7 +64,7 @@ model UserRole {
 
 model Role {
   id          String           @id @default(uuid())
-  name        String
+  name        String           @unique
   description String?
   slug        String           @unique
   color       String

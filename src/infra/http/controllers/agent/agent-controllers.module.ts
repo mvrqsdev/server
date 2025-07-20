@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
 
-import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { PrismaModule } from '@/infra/database/prisma/prisma.module'
-import { WebServiceModule } from '@/infra/webservice/webservice.module'
+import { FacadeModule } from '../../facades/facade.module'
 import { AgentController } from './agent.controller'
 
 @Module({
-	imports: [PrismaModule, WebServiceModule, CryptographyModule],
+	imports: [PrismaModule, FacadeModule],
 	providers: [],
 	controllers: [AgentController],
 	exports: [],

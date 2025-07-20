@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { MessageAudioMessage } from '../value-objects/message-audio-message.value-object'
 import { MessageContactMessage } from '../value-objects/message-contact-message.value-object'
@@ -70,7 +71,7 @@ export class Message extends AggregateRoot<MessageProps> {
 		const message = new Message(
 			{
 				...props,
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)

@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { TokenValue } from '../value-objects/token-value'
@@ -64,7 +65,7 @@ export class Authentication extends AggregateRoot<AuthenticationProps> {
 	}
 
 	private touch() {
-		this.props.updatedAt = new Date()
+		this.props.updatedAt = clock().toDate()
 	}
 
 	static create(
@@ -75,7 +76,7 @@ export class Authentication extends AggregateRoot<AuthenticationProps> {
 			{
 				...props,
 				token: props.token ?? TokenValue.create(props.strategy),
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)

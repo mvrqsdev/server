@@ -4,6 +4,7 @@ import { AuthenticationRepository } from '@/application/repositories/authenticat
 import { CheckIfAuthenticationIsValidUseCase } from '@/application/use-cases/authentication/check-if-authentication-is-valid.use-case'
 import { CreateAuthenticationUseCase } from '@/application/use-cases/authentication/create-authentication.use-case'
 import { GetAuthenticationByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-by-token.use-case'
+import { RevokeAuthenticationUseCase } from '@/application/use-cases/authentication/revoke-authentication.use-case'
 import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { EnvModule } from '@/infra/env/env.module'
@@ -28,6 +29,7 @@ import { PrismaAuthenticationRepository } from './repositories/prisma-authentica
 		CheckIfAuthenticationIsValidUseCase,
 		CreateAuthenticationUseCase,
 		GetAuthenticationByTokenUseCase,
+		RevokeAuthenticationUseCase,
 		UpdateAuthenticationExpirationUseCase,
 	],
 	exports: [
@@ -35,6 +37,7 @@ import { PrismaAuthenticationRepository } from './repositories/prisma-authentica
 		CheckIfAuthenticationIsValidUseCase,
 		CreateAuthenticationUseCase,
 		GetAuthenticationByTokenUseCase,
+		RevokeAuthenticationUseCase,
 		UpdateAuthenticationExpirationUseCase,
 	],
 })

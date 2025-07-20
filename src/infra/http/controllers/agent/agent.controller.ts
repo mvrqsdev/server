@@ -10,53 +10,84 @@ import {
 	Query,
 } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Agent } from '@/domain/agent/entities/agent.entity'
-import { CurrentAgent } from '@/infra/guards/authentication/current-agent.decorator'
-import { Roles } from '@/infra/guards/authorization/roles.decorator'
+import { AgentFacade } from '@/application/facades/agent/agent.facade'
+import { FindAgentByIdUseCase } from '@/application/use-cases/agent/find-agent-by-id.use-case'
+import { GetManyAgentsByFilterUseCase } from '@/application/use-cases/agent/get-many-agents-by-filters.use-case'
+import { Public } from '@/infra/guards/authentication/public'
 import { AgentPresenter } from '../../presenters/agent/agent.presenter'
-import { AgentDetailsPresenter } from '../../presenters/agent/agent-details.presenter'
+import {
+	CreateAgentBodyProps,
+	GetAgentIdParam,
+	GetManyQueryProps,
+	UpdateAgentBodyProps,
+	zodValidationCreateAgentBodyProps,
+	zodValidationGetAgentIdParam,
+	zodValidationGetManyQueryProps,
+	zodValidationUpdateAgentBodyProps,
+} from './interface'
 
 @Controller('/agents')
 @ApiTags('Agents')
 export class AgentController {
+	constructor(
+		private agentFacade: AgentFacade,
+		private getManyAgentsByFilterUseCase: GetManyAgentsByFilterUseCase,
+		private findAgentByIdUseCase: FindAgentByIdUseCase,
+	) {}
 	@Get('/:agentId')
-	@Roles('Admin')
+	@Public()
 	@ApiOperation({
 		summary: 'Obter Agente',
 	})
 	@HttpCode(200)
-	async get(@Param('agentId') agentId: string) {}
+	async get(@Param('agentId') agentId: string) {
+		const { agent } = await this.agentFacade.getAgent(this.findAgentByIdUseCase, {
+			agentId,
+		})
+		return AgentPresenter.toHTTP(agent)
+	}
 
 	@Get()
-	@Roles('Admin')
 	@ApiOperation({
 		summary: 'Listar Agentes',
 	})
+	@Public()
 	@HttpCode(200)
-	async getMany() {}
+	async getMany(@Query(zodValidationGetManyQueryProps) params: GetManyQueryProps) {
+		const { agents } = await this.agentFacade.getMany(
+			this.getManyAgentsByFilterUseCase,
+			params,
+		)
+		return agents.map(AgentPresenter.toHTTP)
+	}
 
 	@Post()
-	@Roles('Admin')
 	@ApiOperation({
 		summary: 'Criar Agente',
 	})
-	@HttpCode(201)
-	async create(@Body() body: any) {}
+	@Public()
+	@HttpCode(200)
+	async create(@Body(zodValidationCreateAgentBodyProps) body: CreateAgentBodyProps) {
+		const { agent } = await this.agentFacade.create(body)
+		return AgentPresenter.toHTTP(agent)
+	}
 
 	@Put('/:agentId')
-	@Roles('Admin', 'Agent')
 	@ApiOperation({
 		summary: 'Atualizar Agente',
 	})
+	@Public()
 	@HttpCode(201)
 	async update(
-		@Param('agentId') agentId: string,
-		@Body() body: any,
-		@CurrentAgent() agent: Agent,
-	) {}
+		@Param(zodValidationGetAgentIdParam) params: GetAgentIdParam,
+		@Body(zodValidationUpdateAgentBodyProps) body: UpdateAgentBodyProps,
+	) {
+		const { agentId } = params
+		const { agent } = await this.agentFacade.update({ agentId, ...body })
+		return AgentPresenter.toHTTP(agent)
+	}
 
 	@Delete('/:agentId')
-	@Roles('Admin')
 	@ApiOperation({
 		summary: 'Inativar Agente',
 	})

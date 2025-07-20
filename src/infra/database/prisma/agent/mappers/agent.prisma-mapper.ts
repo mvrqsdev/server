@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, User as PrismaAgent } from '@prisma/client'
-import {
-	AgentStateType,
-	AgentStatusFactory,
-} from '@/application/repositories/agent/factories/agent-status.factory'
+import { AgentStatusFactory } from '@/application/repositories/agent/factories/agent-status.factory'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { Agent } from '@/domain/agent/entities/agent.entity'
 
@@ -16,7 +13,7 @@ export class PrismaAgentMapper {
 				name: raw.name,
 				email: raw.email,
 				password: raw.password,
-				status: this.agentStatusFactory.create(raw.status as AgentStateType),
+				status: this.agentStatusFactory.create(raw.status),
 				master: raw.master,
 				isInRotation: raw.isInRotation,
 				createdAt: raw.createdAt,

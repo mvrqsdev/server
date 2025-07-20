@@ -6,7 +6,9 @@ import { PrismaCampaignModule } from './campaign/prisma-campaign.module'
 import { PrismaConnectionModule } from './connection/prisma-connection.module'
 import { PrismaContactModule } from './contact/prisma-contact.module'
 import { PrismaLeadModule } from './lead/prisma-lead.module'
+import { PrismaPermissionModule } from './permission/prisma-permission.module'
 import { PrismaService } from './prisma.service'
+import { PrismaRoleModule } from './role/prisma-role.module'
 import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
 
 @Module({
@@ -17,6 +19,8 @@ import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
 		PrismaConnectionModule,
 		PrismaContactModule,
 		PrismaLeadModule,
+		PrismaPermissionModule,
+		PrismaRoleModule,
 		PrismaSchedulingModule,
 	],
 	providers: [PrismaService],
@@ -27,7 +31,9 @@ import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
 		PrismaCampaignModule,
 		PrismaConnectionModule,
 		PrismaContactModule,
+		PrismaPermissionModule,
 		PrismaLeadModule,
+		PrismaRoleModule,
 		PrismaSchedulingModule,
 	],
 })

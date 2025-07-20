@@ -8,7 +8,7 @@ export class AgentPresenter {
 			email: agent.email,
 			master: agent.master,
 			isInRotation: agent.isInRotation,
-			status: agent.status,
+			status: agent.status.getName(),
 			createdAt: agent.createdAt,
 			updatedAt: agent.updatedAt,
 		}

@@ -1,3 +1,4 @@
+import { clock } from '@/core/helpers/dayjs'
 import { Lead } from '../entities/lead.entity'
 import { ContractError } from './errors/contract.error'
 import { CreditAnalysisError } from './errors/credit-analysis.error'
@@ -18,7 +19,7 @@ export class PreService implements LeadState {
 		const dias = 1
 		const hora = 1
 
-		const now = new Date()
+		const now = clock().toDate()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
 		return diffInMs >= dias * hora * 60 * 60 * 1000

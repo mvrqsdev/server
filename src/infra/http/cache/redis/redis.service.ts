@@ -1,14 +1,11 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
+import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { Redis } from 'ioredis'
 import { IEnvService } from '@/core/repositories/env-service.interface'
 
 @Injectable()
-export class RedisService extends Redis implements OnModuleDestroy, OnModuleInit {
+export class RedisService extends Redis implements OnModuleDestroy {
 	constructor(envService: IEnvService) {
 		super(envService.get('REDIS_URI'))
-	}
-	onModuleInit() {
-		console.log('iniciou o redis')
 	}
 
 	onModuleDestroy() {

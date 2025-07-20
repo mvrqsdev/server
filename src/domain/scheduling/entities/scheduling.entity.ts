@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { Scheduled } from '../states/scheduled-status'
@@ -69,7 +70,7 @@ export class Scheduling extends AggregateRoot<SchedulingProps> {
 	}
 
 	private touch() {
-		this.props.updatedAt = new Date()
+		this.props.updatedAt = clock().toDate()
 	}
 
 	static create(
@@ -80,7 +81,7 @@ export class Scheduling extends AggregateRoot<SchedulingProps> {
 			{
 				...props,
 				status: props.status ?? new Scheduled(),
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)

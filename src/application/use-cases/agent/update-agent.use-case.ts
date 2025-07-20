@@ -1,0 +1,89 @@
+import { Injectable } from '@nestjs/common'
+import { HashGenerator } from '@/application/cryptography/hash-generator'
+import { AgentRepository } from '@/application/repositories/agent/agent.repository'
+import { RoleRepository } from '@/application/repositories/role/role.repository'
+import { BaseUseCase } from '@/core/use-cases/base-use-case'
+import { Agent } from '@/domain/agent/entities/agent.entity'
+import { AgentRoles } from '@/domain/agent/entities/agent-roles.watched-list'
+import { RoleNotFoundError } from '../role/errors/role-not-found.error'
+import { AgentAlreadyExistsWithSameEmailError } from './errors/agent-already-exists-with-same-email.error'
+import { AgentNotFoundError } from './errors/agent-not-found.error'
+
+interface UpdateAgentUseCaseRequest {
+	agentId: string
+	name?: string
+	email?: string
+	password?: string
+	roles?: string[]
+}
+
+interface UpdateAgentUseCaseResponse {
+	agent: Agent
+}
+
+@Injectable()
+export class UpdateAgentUseCase
+	implements BaseUseCase<UpdateAgentUseCaseRequest, UpdateAgentUseCaseResponse>
+{
+	constructor(
+		private agentRepository: AgentRepository,
+		private hashGenerator: HashGenerator,
+		private roleRepository: RoleRepository,
+	) {}
+	async execute({
+		agentId,
+		name,
+		email,
+		password,
+		roles,
+	}: UpdateAgentUseCaseRequest): Promise<UpdateAgentUseCaseResponse> {
+		const agent = await this.agentRepository.findById(agentId)
+
+		if (!agent) {
+			throw new AgentNotFoundError()
+		}
+
+		if (email) {
+			const agentWithSameEmail = await this.agentRepository.findByEmail(email)
+
+			if (agentWithSameEmail) {
+				const isSameAgent = agentWithSameEmail.id.equals(agent.id)
+
+				if (!isSameAgent) {
+					throw new AgentAlreadyExistsWithSameEmailError()
+				}
+				agent.email = email
+			}
+		}
+
+		if (name) {
+			agent.name = name
+		}
+
+		if (password) {
+			const hashedPassword = await this.hashGenerator.hash(password)
+			agent.password = hashedPassword
+		}
+
+		if (roles) {
+			// Obtém as roles do agent e cria o WatchedList AgentRoles com as roles do agente.
+			const currentAgentRoles = await this.roleRepository.findManyByAgent(agent)
+			const agentRoles = new AgentRoles(currentAgentRoles)
+
+			// Obtem as roles informadas no parametro
+			const fetchedRoles = await this.roleRepository.findManyByIds(roles)
+			if (fetchedRoles.length !== roles.length) {
+				throw new RoleNotFoundError()
+			}
+			agentRoles.update(fetchedRoles)
+
+			agent.roles = agentRoles
+		}
+
+		await this.agentRepository.save(agent)
+
+		return {
+			agent,
+		}
+	}
+}

@@ -8,9 +8,11 @@ interface CheckIfAgentHasPermissionsUseCaseRequest {
 
 @Injectable()
 export class CheckIfAgentHasPermissionsUseCase
-	implements AgentValidateStrategy<CheckIfAgentHasPermissionsUseCaseRequest, boolean>
+	implements AgentValidateStrategy<CheckIfAgentHasPermissionsUseCaseRequest>
 {
-	async validate(params: CheckIfAgentHasPermissionsUseCaseRequest): Promise<boolean> {
+	async validate(
+		params: CheckIfAgentHasPermissionsUseCaseRequest,
+	): Promise<{ agent: Agent }> {
 		throw new Error('Method not implemented.')
 	}
 }

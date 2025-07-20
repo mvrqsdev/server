@@ -1,11 +1,13 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { AgentFacade } from '@/application/facades/agent/agent.facade'
 import { AuthenticationFacade } from '@/application/facades/authentication/authentication.facade'
+import { RoleFacade } from '@/application/facades/roles/role.facade'
 import { TokenFacade } from '@/application/facades/token/token.facade'
 import { PrismaModule } from '@/infra/database/prisma/prisma.module'
-import { NestAgentFacade } from './agent.facade'
-import { NestAuthenticationFacade } from './authentication.facade'
-import { NestTokenFacade } from './token.facade'
+import { NestAgentFacade } from './nest-agent.facade'
+import { NestAuthenticationFacade } from './nest-authentication.facade'
+import { NestRoleFacade } from './nest-role.facade'
+import { NestTokenFacade } from './nest-token.facade'
 
 @Module({
 	imports: [forwardRef(() => PrismaModule)],
@@ -19,10 +21,14 @@ import { NestTokenFacade } from './token.facade'
 			useClass: NestTokenFacade,
 		},
 		{
+			provide: RoleFacade,
+			useClass: NestRoleFacade,
+		},
+		{
 			provide: AgentFacade,
 			useClass: NestAgentFacade,
 		},
 	],
-	exports: [AgentFacade, TokenFacade, AuthenticationFacade],
+	exports: [AgentFacade, TokenFacade, AuthenticationFacade, RoleFacade],
 })
 export class FacadeModule {}

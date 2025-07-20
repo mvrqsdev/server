@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { clock } from '@/core/helpers/dayjs'
 import { IEnvService } from '@/core/repositories/env-service.interface'
 import { BaseUseCase } from '@/core/use-cases/base-use-case'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
@@ -33,7 +34,7 @@ export class UpdateAuthenticationExpirationUseCase
 		const isApiKey = authentication.strategy === 'ApiKey'
 
 		if (isSession) {
-			const expirationDate = new Date()
+			const expirationDate = clock().toDate()
 			expirationDate.setDate(
 				expirationDate.getDate() + this.iEnvService.get('AUTH_EXPIRATION_DAYS'),
 			)

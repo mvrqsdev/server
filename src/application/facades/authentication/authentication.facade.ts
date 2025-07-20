@@ -4,12 +4,20 @@ import { GetAuthenticationStrategy } from './contract/get-authentication-strateg
 
 export abstract class AuthenticationFacade {
 	abstract create(params: CreateProps): Promise<{ authentication: Authentication }>
+	abstract getAuthentication<TData>(
+		strategy: GetAuthenticationStrategy<TData>,
+		data: TData,
+	): Promise<{ authentication: Authentication }>
 	abstract validate<TData>(
 		strategy: GetAuthenticationStrategy<TData>,
 		data: TData,
 	): Promise<{ authentication: Authentication }>
-	abstract revokeToken(authentication: Authentication): Promise<void>
-	abstract renewToken(authentication: Authentication): Promise<void>
+	abstract revokeToken(
+		authentication: Authentication,
+	): Promise<{ authentication: Authentication }>
+	abstract renewToken(
+		params: RenewTokenProps,
+	): Promise<{ authentication: Authentication }>
 }
 
 export interface CreateProps {
@@ -18,4 +26,9 @@ export interface CreateProps {
 	ip?: string
 	userAgent?: string
 	expiresAt?: Date
+}
+
+export interface RenewTokenProps {
+	authentication: Authentication
+	expiresAt?: Date | null
 }

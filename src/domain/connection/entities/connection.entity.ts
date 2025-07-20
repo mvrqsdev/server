@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { WhatsappNumber } from '../../../core/value-objects/whatsapp-number.value-object'
@@ -89,7 +90,7 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 	}
 
 	private touch() {
-		this.props.updatedAt = new Date()
+		this.props.updatedAt = clock().toDate()
 	}
 
 	static create(
@@ -100,7 +101,7 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 			{
 				...props,
 				principal: props.principal ?? false,
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)

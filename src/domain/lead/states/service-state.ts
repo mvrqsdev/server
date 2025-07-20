@@ -1,3 +1,4 @@
+import { clock } from '@/core/helpers/dayjs'
 import { Scheduled } from '@/domain/scheduling/states/scheduled-status'
 import { Lead } from '../entities/lead.entity'
 import { ContractError } from './errors/contract.error'
@@ -17,7 +18,7 @@ export class Service implements LeadState {
 		const dias = 1
 		const hora = 24
 
-		const now = new Date()
+		const now = clock().toDate()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
 		return diffInMs >= dias * hora * 60 * 60 * 1000

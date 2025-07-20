@@ -1,3 +1,4 @@
+import { clock } from '@/core/helpers/dayjs'
 import { Lead } from '../entities/lead.entity'
 import { ContractError } from './errors/contract.error'
 import { OffError } from './errors/off.error'
@@ -15,7 +16,7 @@ export class CreditAnalysis implements LeadState {
 		const dias = 7
 		const hora = 24
 
-		const now = new Date()
+		const now = clock().toDate()
 		const diffInMs = now.getTime() - lead.updatedAt.getTime()
 
 		return diffInMs >= dias * hora * 60 * 60 * 1000

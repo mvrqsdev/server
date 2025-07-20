@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { Slug } from '@/core/value-objects/slug'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
@@ -31,8 +32,20 @@ export class Permission extends AggregateRoot<PermissionProps> {
 		this.touch()
 	}
 
+	get slug() {
+		return this.props.slug
+	}
+
+	get createdAt() {
+		return this.props.createdAt
+	}
+
+	get updatedAt() {
+		return this.props.updatedAt
+	}
+
 	private touch() {
-		this.props.updatedAt = new Date()
+		this.props.updatedAt = clock().toDate()
 	}
 
 	static create(
@@ -43,7 +56,7 @@ export class Permission extends AggregateRoot<PermissionProps> {
 			{
 				...props,
 				slug: props.slug ?? Slug.create(props.name),
-				createdAt: props.createdAt ?? new Date(),
+				createdAt: props.createdAt ?? clock().toDate(),
 			},
 			id,
 		)
