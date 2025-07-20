@@ -8,15 +8,15 @@ export class LeadDetailsPresenter {
 		return {
 			id: leadDetails.leadId.toString(),
 			contactId: leadDetails.contactId.toString(),
-			contact: ContactPresenter.toHTTP(leadDetails.contact),
 			agentId: leadDetails.agentId.toString(),
-			agent: AgentPresenter.toHTTP(leadDetails.agent),
-			schedulings: leadDetails.schedulings.map(SchedulingPresenter.toHTTP),
 			converted: leadDetails.converted,
 			status: leadDetails.status.state,
 			value: leadDetails.value,
 			createdAt: leadDetails.createdAt,
 			updatedAt: leadDetails.updatedAt,
+			contact: ContactPresenter.toHTTP(leadDetails.contact),
+			agent: AgentPresenter.toHTTP(leadDetails.agent),
+			schedulings: leadDetails.schedulings.map(SchedulingPresenter.toHTTP),
 		}
 	}
 }

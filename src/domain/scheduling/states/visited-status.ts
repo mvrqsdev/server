@@ -1,5 +1,5 @@
-import { DomainError } from '@/core/errors/errors/domain.error'
 import { Scheduling } from '../entities/scheduling.entity'
+import { VisitedError } from './errors/visited.error'
 import { Scheduled } from './scheduled-status'
 import { SchedulingState } from './scheduling-state.interface'
 
@@ -11,6 +11,6 @@ export class Visited implements SchedulingState {
 		scheduling.status = new Scheduled()
 	}
 	Visited(scheduling: Scheduling): void {
-		throw new DomainError('Method not implemented.')
+		throw new VisitedError()
 	}
 }

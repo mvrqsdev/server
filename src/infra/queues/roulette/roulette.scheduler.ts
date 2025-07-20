@@ -6,15 +6,15 @@ import { Queue } from 'bullmq'
 export class RouletteScheduler implements OnModuleInit {
 	constructor(@InjectQueue('Roulette') private queue: Queue) {}
 	async onModuleInit() {
-		await this.queue.add(
-			'Roulette',
-			{},
-			{
-				repeat: {
-					every: 5000,
-				},
-				removeOnComplete: true,
-			},
-		)
+		// await this.queue.add(
+		// 	'Roulette',
+		// 	{},
+		// 	{
+		// 		repeat: {
+		// 			every: 5000,
+		// 		},
+		// 		removeOnComplete: true,
+		// 	},
+		// )
 	}
 }

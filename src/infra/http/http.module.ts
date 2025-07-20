@@ -5,15 +5,19 @@ import { AuthenticationControllersModule } from './controllers/authentication/au
 import { CampaignControllersModule } from './controllers/campaign/campaign-controllers.module'
 import { ConnectionControllersModule } from './controllers/connection/connection-controller.module'
 import { LeadControllersModule } from './controllers/lead/lead-controller.module'
+import { SchedulingControllersModule } from './controllers/scheduling/scheduling-controllers.module'
+import { FacadeModule } from './facades/facade.module'
 import { GlobalHttpExceptionFilter } from './filters/http-exception.filter'
 
 @Module({
 	imports: [
 		AgentControllersModule,
-		AuthenticationControllersModule,
-		ConnectionControllersModule,
-		LeadControllersModule,
-		CampaignControllersModule,
+		// AuthenticationControllersModule,
+		// ConnectionControllersModule,
+		// LeadControllersModule,
+		// CampaignControllersModule,
+		// SchedulingControllersModule,
+		FacadeModule,
 	],
 	providers: [
 		{

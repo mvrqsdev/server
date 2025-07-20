@@ -9,7 +9,6 @@ export class AgentDetailsPresenter {
 			email: agentDetails.email,
 			master: agentDetails.master,
 			isInRotation: agentDetails.isInRotation,
-			role: agentDetails.role,
 			status: agentDetails.status,
 			createdAt: agentDetails.createdAt,
 			updatedAt: agentDetails.updatedAt,

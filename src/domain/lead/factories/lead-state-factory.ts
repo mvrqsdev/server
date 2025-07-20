@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ErrorCodes } from '@/core/errors/codes'
-import { DomainError } from '@/core/errors/errors/domain.error'
 import { Contract } from '../states/contract-state'
 import { CreditAnalysis } from '../states/credit-analysis-state'
 import { Folder } from '../states/folder-state'
@@ -11,6 +9,7 @@ import { Proposal } from '../states/proposal-state'
 import { Scheduling } from '../states/scheduling-state'
 import { Service } from '../states/service-state'
 import { Visit } from '../states/visit-state'
+import { LeadStateNotFoundError } from './errors/lead-state-not-found.error'
 
 @Injectable()
 export class LeadStateFactory {
@@ -51,6 +50,6 @@ export class LeadStateFactory {
 			return new Off()
 		}
 
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FACTORY.DEFAULT)
+		throw new LeadStateNotFoundError()
 	}
 }

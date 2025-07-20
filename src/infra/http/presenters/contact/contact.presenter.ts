@@ -5,7 +5,7 @@ export class ContactPresenter {
 		return {
 			id: contact.id.toString(),
 			name: contact.name,
-			whatsappNumber: contact.whatsappNumber.number,
+			number: contact.number.number,
 			email: contact.email,
 			createdAt: contact.createdAt,
 			updatedAt: contact.updatedAt,

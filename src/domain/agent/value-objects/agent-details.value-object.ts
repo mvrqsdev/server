@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { ValueObject } from '@/core/value-objects/value-object'
 import { Connection } from '@/domain/connection/entities/connection.entity'
+import { AgentStatus } from '../contracts/agent-status.contract'
 
 export interface AgentDetailsProps {
 	agentId: UniqueEntityID
@@ -8,8 +9,7 @@ export interface AgentDetailsProps {
 	email: string
 	master: boolean
 	isInRotation: boolean
-	role: 'Admin' | 'Marketing' | 'Agent'
-	status: 'Active' | 'Inactive'
+	status: AgentStatus
 	createdAt: Date
 	updatedAt?: Date | null
 	connections: Connection[]
@@ -34,10 +34,6 @@ export class AgentDetails extends ValueObject<AgentDetailsProps> {
 
 	get isInRotation() {
 		return this.props.isInRotation
-	}
-
-	get role() {
-		return this.props.role
 	}
 
 	get status() {

@@ -1,25 +1,22 @@
 import { Module } from '@nestjs/common'
+
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
-import { DatabaseModule } from '@/infra/database/database.module'
+import { PrismaModule } from '@/infra/database/prisma/prisma.module'
 import { EnvModule } from '@/infra/env/env.module'
 import { WebServiceModule } from '@/infra/webservice/webservice.module'
-import { UseCasesModule } from '../../use-cases/use-cases.module'
-import { AuthenticationLoginController } from './authentication-login.controller'
-import { AuthenticationLogoutController } from './authentication-logout.controller'
-import { CreateApiKeyController } from './create-api-key.controller'
+import { CacheModule } from '../../cache/cache.module'
+import { AgentControllersModule } from '../agent/agent-controllers.module'
+import { AuthenticationController } from './authentication.controller'
 
 @Module({
 	imports: [
-		EnvModule,
-		DatabaseModule,
+		PrismaModule,
+		CacheModule,
 		WebServiceModule,
 		CryptographyModule,
-		UseCasesModule,
+		EnvModule,
+		AgentControllersModule,
 	],
-	controllers: [
-		CreateApiKeyController,
-		AuthenticationLoginController,
-		AuthenticationLogoutController,
-	],
+	controllers: [AuthenticationController],
 })
 export class AuthenticationControllersModule {}

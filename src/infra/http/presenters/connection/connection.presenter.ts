@@ -7,7 +7,6 @@ export class ConnectionPresenter {
 			name: connection.name.toString(),
 			number: connection.number.number,
 			instanceId: connection.instanceId.toString(),
-			status: connection.status.state,
 			token: connection.token.toString(),
 			principal: connection.principal,
 			agentId: connection.agentId.toString(),

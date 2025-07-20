@@ -1,8 +1,8 @@
 import { ErrorCodes } from '@/core/errors/codes'
-import { UseCaseError } from '@/core/errors/use-case-error'
+import { DomainError } from '@/core/errors/domain.error'
 
-export class AuthenticationNotFoundError extends Error implements UseCaseError {
+export class AuthenticationNotFoundError extends DomainError {
 	constructor() {
-		super(ErrorCodes.AUTHENTICATION.STRATEGY_NOT_FOUND)
+		super(ErrorCodes.AUTHENTICATION.STRATEGY_NOT_FOUND, 404)
 	}
 }

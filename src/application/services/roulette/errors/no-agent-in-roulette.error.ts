@@ -1,8 +1,8 @@
 import { ErrorCodes } from '@/core/errors/codes'
-import { UseCaseError } from '@/core/errors/use-case-error'
+import { DomainError } from '@/core/errors/domain.error'
 
-export class NoAgentInRouletteError extends Error implements UseCaseError {
+export class NoAgentInRouletteError extends DomainError {
 	constructor() {
-		super(ErrorCodes.ROULETTE.AGENT.NOT_FOUND)
+		super(ErrorCodes.ROULETTE.AGENT.NOT_FOUND, 404)
 	}
 }

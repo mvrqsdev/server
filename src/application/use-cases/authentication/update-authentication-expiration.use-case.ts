@@ -1,50 +1,54 @@
 import { Injectable } from '@nestjs/common'
-import { Decrypter } from '@/application/cryptography/decrypter'
-import { FailedToDecryptError } from '@/application/cryptography/errors/failed-to-decrypt.error'
 import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
-import { Either, left, right } from '@/core/either'
+import { IEnvService } from '@/core/repositories/env-service.interface'
+import { BaseUseCase } from '@/core/use-cases/base-use-case'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
-import { AuthenticationNotFoundError } from './errors/authentication-not-found.error'
 
-export interface UpdateAuthenticationExpirationUseCaseRequest {
-	token: string
+interface UpdateAuthenticationExpirationUseCaseRequest {
+	authentication: Authentication
+	expiresAt?: Date | null
 }
 
-type UpdateAuthenticationExpirationUseCaseResponse = Either<
-	FailedToDecryptError | AuthenticationNotFoundError,
-	{ authentication: Authentication }
->
+interface UpdateAuthenticationExpirationUseCaseResponse {
+	authentication: Authentication
+}
 
 @Injectable()
-export class UpdateAuthenticationExpirationUseCase {
+export class UpdateAuthenticationExpirationUseCase
+	implements
+		BaseUseCase<
+			UpdateAuthenticationExpirationUseCaseRequest,
+			UpdateAuthenticationExpirationUseCaseResponse
+		>
+{
 	constructor(
 		private authenticationRepository: AuthenticationRepository,
-		private decrypter: Decrypter,
+		private iEnvService: IEnvService,
 	) {}
-
 	async execute({
-		token,
+		authentication,
+		expiresAt,
 	}: UpdateAuthenticationExpirationUseCaseRequest): Promise<UpdateAuthenticationExpirationUseCaseResponse> {
-		const decryptedToken = await this.decrypter.decrypt(token)
+		const isSession = authentication.strategy === 'Session'
+		const isApiKey = authentication.strategy === 'ApiKey'
 
-		if (!decryptedToken) {
-			return left(new FailedToDecryptError())
-		}
-
-		const authenticationWithSameToken =
-			await this.authenticationRepository.findByToken(decryptedToken)
-
-		if (!authenticationWithSameToken) {
-			return left(new AuthenticationNotFoundError())
-		}
-
-		const authentication =
-			await this.authenticationRepository.updateAuthenticationExpiration(
-				authenticationWithSameToken,
+		if (isSession) {
+			const expirationDate = new Date()
+			expirationDate.setDate(
+				expirationDate.getDate() + this.iEnvService.get('AUTH_EXPIRATION_DAYS'),
 			)
 
-		return right({
+			authentication.expiresAt = expirationDate
+			await this.authenticationRepository.save(authentication)
+		}
+
+		if (isApiKey && typeof expiresAt !== 'undefined') {
+			authentication.expiresAt = expiresAt
+			await this.authenticationRepository.save(authentication)
+		}
+
+		return {
 			authentication,
-		})
+		}
 	}
 }

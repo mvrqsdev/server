@@ -6,7 +6,7 @@ import { ContactLeadList } from './contact-lead.watched-list'
 
 export interface ContactProps {
 	name: string
-	whatsappNumber: WhatsappNumber
+	number: WhatsappNumber
 	email: string
 	leads: ContactLeadList
 	createdAt: Date
@@ -41,12 +41,12 @@ export class Contact extends AggregateRoot<ContactProps> {
 		this.touch()
 	}
 
-	get whatsappNumber() {
-		return this.props.whatsappNumber
+	get number() {
+		return this.props.number
 	}
 
-	set whatsappNumber(whatsappNumber: WhatsappNumber) {
-		this.props.whatsappNumber = whatsappNumber
+	set number(number: WhatsappNumber) {
+		this.props.number = number
 		this.touch()
 	}
 

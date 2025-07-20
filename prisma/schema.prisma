@@ -7,54 +7,111 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserStatus {
-  Active
-  Inactive
-}
-
-enum Role {
-  Admin
-  Marketing
-  Agent
-}
-
 model User {
-  id           String     @id @default(uuid())
+  id           String    @id @default(uuid())
   name         String
-  email        String     @unique
+  email        String    @unique
   password     String
-  master       Boolean    @default(false)
-  isInRotation Boolean    @default(false)
-  role         Role       @default(Agent)
-  status       UserStatus @default(Active)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime?  @updatedAt
+  master       Boolean   @default(false)
+  isInRotation Boolean   @default(false)
+  status       String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
 
   Leads           Lead[]
   LeadsMessage    Message[]
   Connection      Connection[]
   Schedulings     Scheduling[]
+  Roles           UserRole[]
   Authentications Authentication[]
+  Tokens          Token[]
 
   @@map("users")
 }
 
-enum AuthenticationStrategy {
-  ApiKey
-  Session
+enum TokenType {
+  Invite
+  PasswordRecovery
+  EmailVerification
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  agentId   String
+  token     String
+  type      TokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("invites")
+}
+
+model UserRole {
+  agentId   String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Roel  Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([agentId, roleId])
+  @@map("user_roles")
+}
+
+model Role {
+  id          String           @id @default(uuid())
+  name        String
+  description String?
+  slug        String           @unique
+  color       String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime?        @updatedAt
+  Agents      UserRole[]
+  Permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  Role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  Permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Permission {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  slug        String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  Roles RolePermission[]
+
+  @@map("permissions")
 }
 
 model Authentication {
-  id        String                 @id @default(uuid())
-  token     String                 @unique
-  strategy  AuthenticationStrategy
+  id        String    @id @default(uuid())
+  token     String    @unique
+  strategy  String
   agentId   String
   ip        String?
   userAgent String?
   expiresAt DateTime?
   revokedAt DateTime?
-  createdAt DateTime               @default(now())
-  updatedAt DateTime?              @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 }
@@ -77,13 +134,13 @@ model Connection {
 }
 
 model Contact {
-  id             String    @id @default(uuid())
-  name           String
-  whatsappNumber String    @unique
-  email          String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime? @updatedAt
-  Leads          Lead[]
+  id        String    @id @default(uuid())
+  name      String
+  number    String    @unique
+  email     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  Leads     Lead[]
 
   @@map("contacts")
 }
@@ -135,6 +192,7 @@ model Scheduling {
   leadId    String
   agentId   String
   scheduled DateTime
+  address   String
   status    String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt

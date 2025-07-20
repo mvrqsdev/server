@@ -1,10 +1,12 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { TokenValue } from '../value-objects/token-value'
 
+export type AuthenticationStrategy = 'ApiKey' | 'Session'
 export interface AuthenticationProps {
-	token: string
-	strategy: 'ApiKey' | 'Session'
+	token: TokenValue
+	strategy: AuthenticationStrategy
 	agentId: UniqueEntityID
 	ip?: string | null
 	userAgent?: string | null
@@ -65,10 +67,14 @@ export class Authentication extends AggregateRoot<AuthenticationProps> {
 		this.props.updatedAt = new Date()
 	}
 
-	static create(props: Optional<AuthenticationProps, 'createdAt'>, id?: UniqueEntityID) {
+	static create(
+		props: Optional<AuthenticationProps, 'createdAt' | 'token'>,
+		id?: UniqueEntityID,
+	) {
 		const authentication = new Authentication(
 			{
 				...props,
+				token: props.token ?? TokenValue.create(props.strategy),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

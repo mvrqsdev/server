@@ -90,3 +90,19 @@ export interface CreateInstanceResponse {
 		base64: string
 	}
 }
+
+export interface FetchInstanceRequest {
+	instanceName: string
+	instanceId: string
+}
+
+export interface FetchInstanceResponse {
+	id: string
+	name: string
+	connectionStatus: 'connecting' | 'close' | 'open'
+	profileName: string
+	profilePicUrl: string
+	integration: 'WHATSAPP-BAILEYS'
+	number: string
+	token: string
+}

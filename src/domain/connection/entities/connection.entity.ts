@@ -2,8 +2,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { WhatsappNumber } from '../../../core/value-objects/whatsapp-number.value-object'
-import { Close } from '../states/close-state'
-import { ConnectionState } from '../states/connection-state.interface'
+import { ConnectionStatus } from '../contracts/connection-status.contract'
 import { ConnectionToken } from '../value-objects/connection-token.value-object'
 import { InstanceName } from '../value-objects/instance-name.value-object'
 import { InstanceId } from '../value-objects/instanceId.value-object'
@@ -12,7 +11,7 @@ export interface ConnectionProps {
 	name: InstanceName
 	number: WhatsappNumber
 	instanceId: InstanceId
-	status: ConnectionState
+	status: ConnectionStatus
 	token: ConnectionToken
 	agentId: UniqueEntityID
 	principal: boolean
@@ -47,9 +46,21 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		return this.props.status
 	}
 
-	set status(status: ConnectionState) {
+	set status(status: ConnectionStatus) {
 		this.props.status = status
 		this.touch()
+	}
+
+	public CloseConnection() {
+		this.props.status.CloseConnection(this)
+	}
+
+	public StartConnection() {
+		this.props.status.StartConnection(this)
+	}
+
+	public Connect() {
+		this.props.status.Connect(this)
 	}
 
 	get token() {
@@ -81,28 +92,14 @@ export class Connection extends AggregateRoot<ConnectionProps> {
 		this.props.updatedAt = new Date()
 	}
 
-	public Close() {
-		return this.status.Close(this)
-	}
-	public Connecting() {
-		return this.status.Connecting(this)
-	}
-	public Open() {
-		return this.status.Open(this)
-	}
-	public Inactive() {
-		return this.status.Inactive(this)
-	}
-
 	static create(
-		props: Optional<ConnectionProps, 'createdAt' | 'status' | 'principal'>,
+		props: Optional<ConnectionProps, 'createdAt' | 'principal'>,
 		id?: UniqueEntityID,
 	) {
 		const connection = new Connection(
 			{
 				...props,
 				principal: props.principal ?? false,
-				status: props.status ?? new Close(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

@@ -1,7 +1,13 @@
-import { ErrorCodes } from '@/core/errors/codes'
-import { DomainError } from '@/core/errors/errors/domain.error'
 import { Visited } from '@/domain/scheduling/states/visited-status'
 import { Lead } from '../entities/lead.entity'
+import { ContractError } from './errors/contract.error'
+import { CreditAnalysisError } from './errors/credit-analysis.error'
+import { FolderError } from './errors/folder.error'
+import { OffError } from './errors/off.error'
+import { PreServiceError } from './errors/pre-service.error'
+import { ProposalError } from './errors/proposal.error'
+import { ServiceValidationError } from './errors/service-validation.error'
+import { VisitValidationError } from './errors/visit-validation.error'
 import { LeadState } from './lead-state.interface'
 import { Service } from './service-state'
 import { Visit } from './visit-state'
@@ -21,7 +27,7 @@ export class Scheduling implements LeadState {
 		return this.constructor.name
 	}
 	PreService(_: Lead): void {
-		throw new DomainError('Method not implemented.')
+		throw new PreServiceError()
 	}
 	Service(lead: Lead): void {
 		const schedulings = lead.schedulings.getItems()
@@ -31,7 +37,7 @@ export class Scheduling implements LeadState {
 		const hasSchedulings = schedulings.length > 0
 
 		if (!hasSchedulings || !allScheduledEnded) {
-			throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SERVICE.VALIDATION_ERROR)
+			throw new ServiceValidationError()
 		}
 
 		lead.status = new Service()
@@ -47,24 +53,24 @@ export class Scheduling implements LeadState {
 		const hasSchedulings = schedulings.length > 0
 
 		if (!hasSchedulings || !allScheduledEnded) {
-			throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.VISIT.VALIDATION_ERROR)
+			throw new VisitValidationError()
 		}
 
 		lead.status = new Visit()
 	}
 	Folder(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FOLDER.DEFAULT)
+		throw new FolderError()
 	}
 	CreditAnalysis(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CREDIT_ANALYSIS.DEFAULT)
+		throw new CreditAnalysisError()
 	}
 	Proposal(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PROPOSAL.DEFAULT)
+		throw new ProposalError()
 	}
 	Contract(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CONTRACT.DEFAULT)
+		throw new ContractError()
 	}
 	Off(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.OFF.DEFAULT)
+		throw new OffError()
 	}
 }

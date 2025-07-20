@@ -1,8 +1,8 @@
 import { ErrorCodes } from '@/core/errors/codes'
-import { UseCaseError } from '@/core/errors/use-case-error'
+import { DomainError } from '@/core/errors/domain.error'
 
-export class EvolutionInternalError extends Error implements UseCaseError {
+export class EvolutionInternalError extends DomainError {
 	constructor() {
-		super(ErrorCodes.WEBSERVICE.EVOLUTION.INTERNAL_ERROR)
+		super(ErrorCodes.WEBSERVICE.EVOLUTION.INTERNAL_ERROR, 500)
 	}
 }

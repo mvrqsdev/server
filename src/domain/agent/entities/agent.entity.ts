@@ -1,6 +1,9 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { AgentStatus } from '../contracts/agent-status.contract'
+import { InviteAgentEvent } from '../events/invite-agent-event'
+import { AgentRoles } from './agent-roles.watched-list'
 
 export interface AgentProps {
 	name: string
@@ -8,8 +11,8 @@ export interface AgentProps {
 	password: string
 	master: boolean
 	isInRotation: boolean
-	role: 'Admin' | 'Marketing' | 'Agent'
-	status: 'Active' | 'Inactive'
+	roles: AgentRoles
+	status: AgentStatus
 	createdAt: Date
 	updatedAt?: Date | null
 }
@@ -46,17 +49,30 @@ export class Agent extends AggregateRoot<AgentProps> {
 		return this.props.status
 	}
 
-	set status(status: 'Active' | 'Inactive') {
-		this.props.status = status
+	set status(newStatus: AgentStatus) {
+		this.props.status = newStatus
 		this.touch()
 	}
 
-	get role() {
-		return this.props.role
+	public inactiveAgent() {
+		this.status.inactiveAgent(this)
 	}
 
-	set role(role: 'Admin' | 'Marketing' | 'Agent') {
-		this.props.role = role
+	public activeAgent() {
+		this.status.activeAgent(this)
+	}
+
+	public inviteAgent() {
+		this.status.inviteAgent(this)
+		this.addDomainEvent(new InviteAgentEvent(this))
+	}
+
+	get roles() {
+		return this.props.roles
+	}
+
+	set roles(roles: AgentRoles) {
+		this.props.roles = roles
 		this.touch()
 	}
 
@@ -91,19 +107,15 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	static create(
-		props: Optional<
-			AgentProps,
-			'createdAt' | 'status' | 'role' | 'master' | 'isInRotation'
-		>,
+		props: Optional<AgentProps, 'createdAt' | 'roles' | 'master' | 'isInRotation'>,
 		id?: UniqueEntityID,
 	) {
 		const agent = new Agent(
 			{
 				...props,
 				isInRotation: props.isInRotation ?? false,
-				status: props.status ?? 'Active',
 				master: props.master ?? false,
-				role: props.role ?? 'Agent',
+				roles: props.roles ?? new AgentRoles(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

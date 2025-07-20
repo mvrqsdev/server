@@ -1,12 +1,6 @@
-import {
-	ArgumentsHost,
-	Catch,
-	ExceptionFilter,
-	HttpException,
-	HttpStatus,
-} from '@nestjs/common'
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common'
 import { Response } from 'express'
-import { DomainError } from '@/core/errors/errors/domain.error'
+import { DomainError } from '@/core/errors/domain.error'
 
 @Catch()
 export class GlobalHttpExceptionFilter implements ExceptionFilter {
@@ -14,32 +8,39 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse<Response>()
 
-		// 1. Trata DomainError (409)
 		if (exception instanceof DomainError) {
-			return response.status(HttpStatus.CONFLICT).json({
-				statusCode: HttpStatus.CONFLICT,
-				message: exception.message,
-				error: 'Conflict',
-			})
+			return this.handleDomainError(exception, response)
 		}
 
-		// 2. Trata HttpExceptions (401, 400, etc)
 		if (exception instanceof HttpException) {
-			const status = exception.getStatus()
-			const resBody = exception.getResponse()
-
-			const body =
-				typeof resBody === 'string'
-					? { message: resBody }
-					: (resBody as Record<string, any>)
-
-			return response.status(status).json({
-				statusCode: status,
-				...body,
-			})
+			return this.handleHttpException(exception, response)
 		}
 
-		// 3. Exceção não tratada — deixa Nest lidar (500)
 		throw exception
+	}
+
+	private handleDomainError(error: DomainError, response: Response) {
+		const status = error.httpCode ?? 500
+
+		return response.status(status).json({
+			statusCode: status,
+			message: error.message,
+			error: error.name,
+		})
+	}
+
+	private handleHttpException(exception: HttpException, response: Response) {
+		const status = exception.getStatus()
+		const resBody = exception.getResponse()
+
+		const body =
+			typeof resBody === 'string'
+				? { message: resBody }
+				: (resBody as Record<string, any>)
+
+		return response.status(status).json({
+			statusCode: status,
+			...body,
+		})
 	}
 }

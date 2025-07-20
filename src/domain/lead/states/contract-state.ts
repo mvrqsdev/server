@@ -1,6 +1,10 @@
-import { ErrorCodes } from '@/core/errors/codes'
-import { DomainError } from '@/core/errors/errors/domain.error'
 import { Lead } from '../entities/lead.entity'
+import { CreditAnalysisError } from './errors/credit-analysis.error'
+import { FolderError } from './errors/folder.error'
+import { PreServiceError } from './errors/pre-service.error'
+import { SchedulingError } from './errors/scheduling.error'
+import { ServiceError } from './errors/service.error'
+import { VisitError } from './errors/visit.error'
 import { LeadState } from './lead-state.interface'
 import { Off } from './off-state'
 import { Proposal } from './proposal-state'
@@ -13,22 +17,22 @@ export class Contract implements LeadState {
 		return this.constructor.name
 	}
 	PreService(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.PRE_SERVICE.DEFAULT)
+		throw new PreServiceError()
 	}
 	Service(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SERVICE.DEFAULT)
+		throw new ServiceError()
 	}
 	Scheduling(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.SCHEDULING.DEFAULT)
+		throw new SchedulingError()
 	}
 	Visit(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.VISIT.DEFAULT)
+		throw new VisitError()
 	}
 	Folder(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.FOLDER.DEFAULT)
+		throw new FolderError()
 	}
 	CreditAnalysis(_: Lead): void {
-		throw new DomainError(ErrorCodes.LEAD.LEAD_STATE.CREDIT_ANALYSIS.DEFAULT)
+		throw new CreditAnalysisError()
 	}
 	Proposal(lead: Lead): void {
 		lead.status = new Proposal()

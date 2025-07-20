@@ -1,7 +1,7 @@
-import { DomainError } from '@/core/errors/errors/domain.error'
 import { Scheduled } from '../states/scheduled-status'
 import { SchedulingState } from '../states/scheduling-state.interface'
 import { Visited } from '../states/visited-status'
+import { SchedulingStateNotFoundError } from './errors/scheduling-state-not-found.error'
 
 export class SchedulingStateFactory {
 	static create(status: string): SchedulingState {
@@ -13,6 +13,6 @@ export class SchedulingStateFactory {
 			return new Visited()
 		}
 
-		throw new DomainError('Scheduling state not found.')
+		throw new SchedulingStateNotFoundError()
 	}
 }

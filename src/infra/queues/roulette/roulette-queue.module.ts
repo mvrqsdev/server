@@ -1,23 +1,17 @@
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { RouletteService } from '@/application/services/roulette/roulette.service'
-import { UpdateInactiveLeadAgentUseCase } from '@/application/use-cases/roulette/update-inactive-lead-agent.use-case'
-import { DatabaseModule } from '@/infra/database/database.module'
+import { PrismaModule } from '@/infra/database/prisma/prisma.module'
 import { RouletteProcessor } from './roulette.processor'
 import { RouletteScheduler } from './roulette.scheduler'
 
 @Module({
 	imports: [
-		DatabaseModule,
+		PrismaModule,
 		BullModule.registerQueue({
 			name: 'Roulette',
 		}),
 	],
-	providers: [
-		RouletteScheduler,
-		RouletteProcessor,
-		RouletteService,
-		UpdateInactiveLeadAgentUseCase,
-	],
+	providers: [RouletteScheduler, RouletteProcessor, RouletteService],
 })
 export class RouletteQueueModule {}

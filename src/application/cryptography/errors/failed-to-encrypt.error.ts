@@ -1,7 +1,6 @@
 import { ErrorCodes } from '@/core/errors/codes'
-import { UseCaseError } from '@/core/errors/use-case-error'
 
-export class FailedToEncryptError extends Error implements UseCaseError {
+export class FailedToEncryptError extends Error {
 	constructor() {
 		super(ErrorCodes.CRYPTOGRAPHY.DEFAULT)
 	}

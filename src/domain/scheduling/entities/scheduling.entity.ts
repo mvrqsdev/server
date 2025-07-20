@@ -8,6 +8,7 @@ export interface SchedulingProps {
 	agentId: UniqueEntityID
 	leadId: UniqueEntityID
 	status: SchedulingState
+	address: string
 	scheduled: Date
 	createdAt: Date
 	updatedAt?: Date | null
@@ -46,6 +47,15 @@ export class Scheduling extends AggregateRoot<SchedulingProps> {
 
 	set status(status: SchedulingState) {
 		this.status[status.state]()
+		this.touch()
+	}
+
+	get address() {
+		return this.props.address
+	}
+
+	set address(address: string) {
+		this.props.address = address
 		this.touch()
 	}
 

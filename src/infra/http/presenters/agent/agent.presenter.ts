@@ -5,9 +5,12 @@ export class AgentPresenter {
 		return {
 			id: agent.id.toString(),
 			name: agent.name,
+			email: agent.email,
 			master: agent.master,
 			isInRotation: agent.isInRotation,
-			role: agent.role,
+			status: agent.status,
+			createdAt: agent.createdAt,
+			updatedAt: agent.updatedAt,
 		}
 	}
 }
