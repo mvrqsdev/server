@@ -4,7 +4,11 @@
 	"sourceRoot": "src",
 	"entryFile": "infra/main",
 	"compilerOptions": {
+		"watchAssets": true,
 		"deleteOutDir": true,
-		"assets": [{ "include": "i18n/**/*", "watchAssets": true }]
+		"assets": [
+			{ "include": "i18n/**/*", "watchAssets": true },
+			"infra/mail/templates/**/*"
+		]
 	}
 }

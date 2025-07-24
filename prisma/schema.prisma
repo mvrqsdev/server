@@ -29,27 +29,6 @@ model User {
   @@map("users")
 }
 
-enum TokenType {
-  Invite
-  PasswordRecovery
-  EmailVerification
-}
-
-model Token {
-  id        String    @id @default(uuid())
-  agentId   String
-  token     String
-  type      TokenType
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-
-  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  @@map("invites")
-}
-
 model UserRole {
   agentId   String
   roleId    String
@@ -101,6 +80,26 @@ model Permission {
   @@map("permissions")
 }
 
+enum TokenType {
+  Invite
+  PasswordRecovery
+  EmailVerification
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  agentId   String
+  token     String    @unique
+  type      TokenType
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+
+  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("invites")
+}
+
 model Authentication {
   id        String    @id @default(uuid())
   token     String    @unique
@@ -114,6 +113,19 @@ model Authentication {
   updatedAt DateTime? @updatedAt
 
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model Instance {
+  id        String    @id @default(uuid())
+  agentId   String
+  number    String?
+  session   Json?
+  status    String
+  isPrimary Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("instances")
 }
 
 model Connection {

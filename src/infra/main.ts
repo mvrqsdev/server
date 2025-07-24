@@ -1,3 +1,4 @@
+import { join } from 'node:path'
 import { NestFactory } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -13,6 +14,8 @@ async function bootstrap() {
 	const port = configService.get('PORT')
 
 	app.use(cookieParser())
+	app.setBaseViewsDir(join(__dirname, '..', 'views'))
+	app.setViewEngine('hbs')
 	app.useBodyParser('json', { limit: '10mb' })
 	app.set('trust proxy', 1)
 	patchNestJsSwagger()

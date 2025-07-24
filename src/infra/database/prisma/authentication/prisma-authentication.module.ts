@@ -1,31 +1,26 @@
-import { forwardRef, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 
-import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { AuthenticationRepository } from '@/application/repositories/authentication.repository'
 import { CheckIfAuthenticationIsValidUseCase } from '@/application/use-cases/authentication/check-if-authentication-is-valid.use-case'
 import { CreateAuthenticationUseCase } from '@/application/use-cases/authentication/create-authentication.use-case'
+import { GetAuthenticationFactory } from '@/application/use-cases/authentication/factories/get-authentication-strategy.factory'
 import { GetAuthenticationByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-by-token.use-case'
 import { RevokeAuthenticationUseCase } from '@/application/use-cases/authentication/revoke-authentication.use-case'
 import { UpdateAuthenticationExpirationUseCase } from '@/application/use-cases/authentication/update-authentication-expiration.use-case'
-import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { EnvModule } from '@/infra/env/env.module'
-import { FacadeModule } from '@/infra/http/facades/facade.module'
-import { PrismaAgentModule } from '../agent/prisma-agent.module'
 import { PrismaCoreModule } from '../prisma-core.module'
+import { PrismaAuthenticationMapper } from './mappers/authentication.prisma-mapper'
 import { PrismaAuthenticationRepository } from './repositories/prisma-authentication.repository'
 
 @Module({
-	imports: [
-		PrismaCoreModule,
-		PrismaAgentModule,
-		CryptographyModule,
-		EnvModule,
-		forwardRef(() => FacadeModule),
-	],
+	imports: [PrismaCoreModule, EnvModule],
 	providers: [
+		PrismaAuthenticationMapper,
 		{
 			provide: AuthenticationRepository,
 			useClass: PrismaAuthenticationRepository,
 		},
+		GetAuthenticationFactory,
 		CheckIfAuthenticationIsValidUseCase,
 		CreateAuthenticationUseCase,
 		GetAuthenticationByTokenUseCase,
@@ -33,7 +28,9 @@ import { PrismaAuthenticationRepository } from './repositories/prisma-authentica
 		UpdateAuthenticationExpirationUseCase,
 	],
 	exports: [
+		PrismaAuthenticationMapper,
 		AuthenticationRepository,
+		GetAuthenticationFactory,
 		CheckIfAuthenticationIsValidUseCase,
 		CreateAuthenticationUseCase,
 		GetAuthenticationByTokenUseCase,

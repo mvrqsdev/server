@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { GetAuthenticationStrategy } from '@/application/facades/authentication/contract/get-authentication-strategy'
-import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { AuthenticationRepository } from '@/application/repositories/authentication.repository'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
 import { AuthenticationNotFoundError } from './errors/authentication-not-found.error'
 
-interface GetAuthenticationByTokenUseCaseRequest {
+export interface GetAuthenticationByTokenUseCaseRequest {
 	token: string
-}
-
-interface GetAuthenticationByTokenUseCaseResponse {
-	authentication: Authentication
 }
 
 @Injectable()
@@ -17,9 +13,9 @@ export class GetAuthenticationByTokenUseCase
 	implements GetAuthenticationStrategy<GetAuthenticationByTokenUseCaseRequest>
 {
 	constructor(private authenticationRepository: AuthenticationRepository) {}
-	async execute({
-		token,
-	}: GetAuthenticationByTokenUseCaseRequest): Promise<GetAuthenticationByTokenUseCaseResponse> {
+	async execute({ token }: GetAuthenticationByTokenUseCaseRequest): Promise<{
+		authentication: Authentication
+	}> {
 		const authenticationWithSameToken =
 			await this.authenticationRepository.getByToken(token)
 

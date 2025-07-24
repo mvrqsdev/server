@@ -1,22 +1,15 @@
-import { forwardRef, Module } from '@nestjs/common'
-import { ConnectionRepository } from '@/application/repositories/connection/connection.repository'
-import { ConnectionStatusFactory } from '@/application/repositories/connection/factories/connection-status.factory'
-import { Close } from '@/application/repositories/connection/states/close'
-import { Connecting } from '@/application/repositories/connection/states/connecting'
-import { Open } from '@/application/repositories/connection/states/open'
-import { PrismaConnectionStatusFactory } from '@/infra/factories/connection-status/prisma-connection-status.factory'
-import { FacadeModule } from '@/infra/http/facades/facade.module'
-import { PrismaAgentModule } from '../agent/prisma-agent.module'
+import { Module } from '@nestjs/common'
+import { ConnectionRepository } from '@/application/repositories/connection.repository'
+import { ConnectionStatusFactory } from '@/domain/connection/factories/connection-status.factory'
+import { Close } from '@/domain/connection/states/close'
+import { Connecting } from '@/domain/connection/states/connecting'
+import { Open } from '@/domain/connection/states/open'
 import { PrismaCoreModule } from '../prisma-core.module'
 import { PrismaConnectionMapper } from './mappers/connection.prisma-mapper'
 import { PrismaConnectionRepository } from './repositories/prisma-connection.repository'
 
 @Module({
-	imports: [
-		PrismaCoreModule,
-		forwardRef(() => PrismaAgentModule),
-		forwardRef(() => FacadeModule),
-	],
+	imports: [PrismaCoreModule],
 	providers: [
 		PrismaConnectionMapper,
 		{
@@ -31,10 +24,7 @@ import { PrismaConnectionRepository } from './repositories/prisma-connection.rep
 			provide: 'ConnectionStatusConnecting',
 			useClass: Connecting,
 		},
-		{
-			provide: ConnectionStatusFactory,
-			useClass: PrismaConnectionStatusFactory,
-		},
+		ConnectionStatusFactory,
 		{
 			provide: ConnectionRepository,
 			useClass: PrismaConnectionRepository,

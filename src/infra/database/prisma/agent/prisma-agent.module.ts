@@ -1,23 +1,25 @@
 import { forwardRef, Module } from '@nestjs/common'
 
-import { AgentRepository } from '@/application/repositories/agent/agent.repository'
-import { AgentStatusFactory } from '@/application/repositories/agent/factories/agent-status.factory'
-import { Active } from '@/application/repositories/agent/states/active-agent-status'
-import { Inactive } from '@/application/repositories/agent/states/inactive-agent-status'
-import { Invited } from '@/application/repositories/agent/states/invited-agent-status'
+import { AgentRepository } from '@/application/repositories/agent.repository'
+
 import { CheckAgentIsActiveUseCase } from '@/application/use-cases/agent/check-agent-is-active.use-case'
+import { CheckAgentPasswordUseCase } from '@/application/use-cases/agent/check-agent-password.use-case'
 import { CheckIfAgentHasPermissionsUseCase } from '@/application/use-cases/agent/check-if-agent-has-permissions.use-case'
 import { CheckIfThereNoAgentWithThisEmailUseCase } from '@/application/use-cases/agent/check-if-there-no-agent-with-this-email.use-case'
 import { CreateAgentUseCase } from '@/application/use-cases/agent/create-agent.use-case'
+import { GetAgentStrategyFactory } from '@/application/use-cases/agent/factories/get-agent-strategy.factory'
+import { GetManyAgentsStrategyFactory } from '@/application/use-cases/agent/factories/get-many-agents-strategy.factory'
+import { GetValidateAgentStrategyFactory } from '@/application/use-cases/agent/factories/get-validate-agent-strategy.factory'
 import { FindAgentByAuthenticationUseCase } from '@/application/use-cases/agent/find-agent-by-authentication.use-case'
 import { FindAgentByEmailUseCase } from '@/application/use-cases/agent/find-agent-by-email.use-case'
 import { FindAgentByIdUseCase } from '@/application/use-cases/agent/find-agent-by-id.use-case'
 import { GetManyAgentsByFilterUseCase } from '@/application/use-cases/agent/get-many-agents-by-filters.use-case'
 import { UpdateAgentUseCase } from '@/application/use-cases/agent/update-agent.use-case'
-import { ValidateAgentEmailAndPasswordUseCase } from '@/application/use-cases/agent/validate-agent-email-and-password.use-case'
+import { AgentStatusFactory } from '@/domain/agent/factories/agent-status.factory'
+import { Active } from '@/domain/agent/states/active-agent-status'
+import { Inactive } from '@/domain/agent/states/inactive-agent-status'
+import { Invited } from '@/domain/agent/states/invited-agent-status'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
-import { EnvModule } from '@/infra/env/env.module'
-import { PrismaAgentStatusFactory } from '@/infra/factories/agent-status/prisma-agent-status.factory'
 import { FacadeModule } from '@/infra/http/facades/facade.module'
 import { PrismaConnectionModule } from '../connection/prisma-connection.module'
 import { PrismaCoreModule } from '../prisma-core.module'
@@ -28,12 +30,10 @@ import { PrismaAgentRepository } from './repositories/prisma-agent.repository'
 
 @Module({
 	imports: [
-		PrismaCoreModule,
-		PrismaRoleModule,
 		CryptographyModule,
-		EnvModule,
+		PrismaCoreModule,
+		PrismaConnectionModule,
 		forwardRef(() => PrismaRoleModule),
-		forwardRef(() => PrismaConnectionModule),
 		forwardRef(() => FacadeModule),
 	],
 	providers: [
@@ -51,19 +51,16 @@ import { PrismaAgentRepository } from './repositories/prisma-agent.repository'
 			provide: 'AgentStatusInvited',
 			useClass: Invited,
 		},
-		{
-			provide: AgentStatusFactory,
-			useClass: PrismaAgentStatusFactory,
-		},
+		GetAgentStrategyFactory,
+		GetManyAgentsStrategyFactory,
+		GetValidateAgentStrategyFactory,
+		AgentStatusFactory,
 		{
 			provide: AgentRepository,
 			useClass: PrismaAgentRepository,
 		},
-
-		/**
-		 *  Use Cases
-		 **/
 		CheckAgentIsActiveUseCase,
+		CheckAgentPasswordUseCase,
 		CheckIfAgentHasPermissionsUseCase,
 		CheckIfThereNoAgentWithThisEmailUseCase,
 		CreateAgentUseCase,
@@ -72,21 +69,18 @@ import { PrismaAgentRepository } from './repositories/prisma-agent.repository'
 		FindAgentByIdUseCase,
 		GetManyAgentsByFilterUseCase,
 		UpdateAgentUseCase,
-		ValidateAgentEmailAndPasswordUseCase,
 	],
 	exports: [
 		PrismaAgentMapper,
 		PrismaAgentDetailsMapper,
-
 		'AgentStatusActive',
 		'AgentStatusInactive',
 		'AgentStatusInvited',
+		GetAgentStrategyFactory,
+		GetManyAgentsStrategyFactory,
+		GetValidateAgentStrategyFactory,
 		AgentStatusFactory,
 		AgentRepository,
-
-		/**
-		 * UseCases
-		 **/
 		CheckAgentIsActiveUseCase,
 		CheckIfAgentHasPermissionsUseCase,
 		CheckIfThereNoAgentWithThisEmailUseCase,
@@ -96,7 +90,7 @@ import { PrismaAgentRepository } from './repositories/prisma-agent.repository'
 		FindAgentByIdUseCase,
 		GetManyAgentsByFilterUseCase,
 		UpdateAgentUseCase,
-		ValidateAgentEmailAndPasswordUseCase,
+		CheckAgentPasswordUseCase,
 	],
 })
 export class PrismaAgentModule {}

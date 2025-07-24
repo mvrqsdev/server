@@ -5,10 +5,7 @@ import { AgentFacade } from '@/application/facades/agent/agent.facade'
 
 import { AuthenticationFacade } from '@/application/facades/authentication/authentication.facade'
 
-import { CheckAgentIsActiveUseCase } from '@/application/use-cases/agent/check-agent-is-active.use-case'
-import { FindAgentByAuthenticationUseCase } from '@/application/use-cases/agent/find-agent-by-authentication.use-case'
 import { TokenNotFoundError } from '@/application/use-cases/authentication/errors/token-not-found.error'
-import { GetAuthenticationByTokenUseCase } from '@/application/use-cases/authentication/get-authentication-by-token.use-case'
 import { IEnvService } from '@/core/repositories/env-service.interface'
 import { IS_PUBLIC_KEY } from './public'
 
@@ -19,9 +16,6 @@ export class AuthenticationGuard implements CanActivate {
 		private envService: IEnvService,
 		private authenticationFacade: AuthenticationFacade,
 		private agentFacade: AgentFacade,
-		private getAuthenticationByTokenUseCase: GetAuthenticationByTokenUseCase,
-		private findAgentByAuthenticationUseCase: FindAgentByAuthenticationUseCase,
-		private checkAgentIsActiveUseCase: CheckAgentIsActiveUseCase,
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -47,15 +41,21 @@ export class AuthenticationGuard implements CanActivate {
 			throw new TokenNotFoundError()
 		}
 
-		const { authentication } = await this.authenticationFacade.validate(
-			this.getAuthenticationByTokenUseCase,
-			{ token },
+		const { authentication } = await this.authenticationFacade.validate('token', {
+			token,
+		})
+		const { agent } = await this.agentFacade.validate(
+			'authentication',
+			{
+				authentication,
+			},
+			[
+				{
+					type: 'active',
+					config: {},
+				},
+			],
 		)
-		const { agent } = await this.agentFacade.getAgent(
-			this.findAgentByAuthenticationUseCase,
-			{ authentication },
-		)
-		await this.checkAgentIsActiveUseCase.execute({ agent })
 
 		request['agent'] = agent
 		request['authentication'] = authentication

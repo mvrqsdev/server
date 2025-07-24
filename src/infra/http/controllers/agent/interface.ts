@@ -12,13 +12,17 @@ export class GetAgentParamPropsDTO extends createZodDto(getAgentIdParam) {}
  *
  */
 export const getManyQueryProps = z.object({
+	agentIds: z.array(z.string().uuid()).optional(),
 	name: z.string().optional(),
 	email: z.string().optional(),
 	master: z
 		.string()
 		.transform((val) => val === 'true')
 		.optional(),
-	rotation: z.coerce.boolean().optional(),
+	inRotation: z
+		.string()
+		.transform((val) => val === 'true')
+		.optional(),
 	roles: z
 		.union([
 			z
@@ -28,24 +32,14 @@ export const getManyQueryProps = z.object({
 			z.array(z.string().uuid()),
 		])
 		.optional(),
-	status: z.union([z.string().transform((val) => [val]), z.array(z.string())]).optional(),
+	status: z.array(z.string()).optional(),
 
-	startCreatedAt: z
+	start_created_at: z
 		.string()
 		.transform((dateStr) => clock(dateStr).startOf('day').toDate())
 		.optional(),
 
-	endCreatedAt: z
-		.string()
-		.transform((dateStr) => clock(dateStr).endOf('day').toDate())
-		.optional(),
-
-	startUpdatedAt: z
-		.string()
-		.transform((dateStr) => clock(dateStr).startOf('day').toDate())
-		.optional(),
-
-	endUpdatedAt: z
+	end_created_at: z
 		.string()
 		.transform((dateStr) => clock(dateStr).endOf('day').toDate())
 		.optional(),

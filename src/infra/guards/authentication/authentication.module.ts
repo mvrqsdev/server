@@ -6,8 +6,7 @@ import { PrismaModule } from '@/infra/database/prisma/prisma.module'
 import { FacadeModule } from '@/infra/http/facades/facade.module'
 import { CryptographyModule } from '../../cryptography/cryptography.module'
 import { EnvModule } from '../../env/env.module'
-import { AgentControllersModule } from '../../http/controllers/agent/agent-controllers.module'
-import { AuthenticationControllersModule } from '../../http/controllers/authentication/authentication-controllers.module'
+
 import { AuthenticationGuard } from './authentication.guard'
 
 @Module({
@@ -17,8 +16,6 @@ import { AuthenticationGuard } from './authentication.guard'
 		PrismaAgentModule,
 		CryptographyModule,
 		EnvModule,
-		AgentControllersModule,
-		AuthenticationControllersModule,
 		FacadeModule,
 	],
 	providers: [

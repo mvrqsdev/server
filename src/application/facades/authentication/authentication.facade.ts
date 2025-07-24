@@ -1,16 +1,20 @@
 import { Agent } from '@/domain/agent/entities/agent.entity'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
-import { GetAuthenticationStrategy } from './contract/get-authentication-strategy'
+import {
+	AuthenticationStrategyType,
+	AuthenticationStrategyTypeMap,
+} from './contract/get-authentication-strategy'
 
 export abstract class AuthenticationFacade {
 	abstract create(params: CreateProps): Promise<{ authentication: Authentication }>
-	abstract getAuthentication<TData>(
-		strategy: GetAuthenticationStrategy<TData>,
-		data: TData,
+	abstract getAuthentication<T extends AuthenticationStrategyType>(
+		type: T,
+		data: AuthenticationStrategyTypeMap[T],
 	): Promise<{ authentication: Authentication }>
-	abstract validate<TData>(
-		strategy: GetAuthenticationStrategy<TData>,
-		data: TData,
+
+	abstract validate<T extends AuthenticationStrategyType>(
+		type: T,
+		data: AuthenticationStrategyTypeMap[T],
 	): Promise<{ authentication: Authentication }>
 	abstract revokeToken(
 		authentication: Authentication,

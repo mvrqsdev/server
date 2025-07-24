@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { User as PrismaAgent, Connection as PrismaConnection } from '@prisma/client'
+import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import {
 	AgentStateType,
 	AgentStatusFactory,
-} from '@/application/repositories/agent/factories/agent-status.factory'
-import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+} from '@/domain/agent/factories/agent-status.factory'
 import { AgentDetails } from '@/domain/agent/value-objects/agent-details.value-object'
 import { PrismaConnectionMapper } from '../../connection/mappers/connection.prisma-mapper'
 

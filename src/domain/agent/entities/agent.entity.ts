@@ -3,7 +3,9 @@ import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { AgentStatus } from '../contracts/agent-status.contract'
-import { InviteAgentEvent } from '../events/invite-agent-event'
+import { AlterAgentEmailEvent } from '../events/alter-agent-email.event'
+import { AlterAgentStatusEvent } from '../events/alter-agent-status.event'
+import { CreatedAgentEvent } from '../events/created-agent.event'
 import { AgentRoles } from './agent-roles.watched-list'
 
 export interface AgentProps {
@@ -33,6 +35,9 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	set email(email: string) {
+		if (this.props.email !== email) {
+			this.addDomainEvent(new AlterAgentEmailEvent(this))
+		}
 		this.props.email = email
 		this.touch()
 	}
@@ -51,6 +56,9 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	set status(newStatus: AgentStatus) {
+		if (this.props.status.getName() !== newStatus.getName()) {
+			this.addDomainEvent(new AlterAgentStatusEvent(this))
+		}
 		this.props.status = newStatus
 		this.touch()
 	}
@@ -65,7 +73,6 @@ export class Agent extends AggregateRoot<AgentProps> {
 
 	public inviteAgent() {
 		this.status.inviteAgent(this)
-		this.addDomainEvent(new InviteAgentEvent(this))
 	}
 
 	get roles() {
@@ -121,6 +128,12 @@ export class Agent extends AggregateRoot<AgentProps> {
 			},
 			id,
 		)
+
+		const isNewAgent = !id
+
+		if (isNewAgent) {
+			agent.addDomainEvent(new CreatedAgentEvent(agent))
+		}
 
 		return agent
 	}

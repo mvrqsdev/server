@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { SchedulingRepository } from '@/application/repositories/scheduling/scheduling.repository'
+import { SchedulingRepository } from '@/application/repositories/scheduling.repository'
 import { Scheduling } from '@/domain/scheduling/entities/scheduling.entity'
 import { PrismaService } from '../../prisma.service'
 import { PrismaSchedulingMapper } from '../mappers/scheduling.prisma-mapper'

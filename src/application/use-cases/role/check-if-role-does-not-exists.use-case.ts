@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { RoleRepository } from '@/application/repositories/role/role.repository'
+import { RoleRepository } from '@/application/repositories/role.repository'
 import { BaseUseCase } from '@/core/use-cases/base-use-case'
 import { RoleAlreadyExistsWithSameNameError } from './errors/role-already-exists-with-same-name.error'
 
@@ -13,7 +13,6 @@ export class CheckIfRoleDoesNotExistsUseCase
 {
 	constructor(private roleRepository: RoleRepository) {}
 	async execute({ name }: CheckIfRoleDoesNotExistsUseCaseRequest): Promise<void> {
-		console.log('verificando nome', name)
 		const roleWithSameName = await this.roleRepository.findByName(name)
 
 		if (roleWithSameName) {

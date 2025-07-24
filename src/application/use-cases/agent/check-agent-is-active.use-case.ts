@@ -1,21 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { BaseUseCase } from '@/core/use-cases/base-use-case'
+import { AgentValidateStrategy } from '@/application/facades/agent/contract/agent-validate-strategy'
 import { Agent } from '@/domain/agent/entities/agent.entity'
-import { AgentIsNotActiveError } from './errors/agent-is-not-active.error'
 
-interface CheckAgentIsActiveUseCaseRequest {
+export interface CheckAgentIsActiveUseCaseRequest {
 	agent: Agent
 }
 
 @Injectable()
 export class CheckAgentIsActiveUseCase
-	implements BaseUseCase<CheckAgentIsActiveUseCaseRequest, void>
+	implements AgentValidateStrategy<CheckAgentIsActiveUseCaseRequest>
 {
-	async execute({ agent }: CheckAgentIsActiveUseCaseRequest): Promise<void> {
-		const agentStatus = agent.status.getName()
-
-		if (agentStatus !== 'Active') {
-			throw new AgentIsNotActiveError()
-		}
+	async execute(params: CheckAgentIsActiveUseCaseRequest): Promise<void> {
+		throw new Error('Method not implemented.')
 	}
 }

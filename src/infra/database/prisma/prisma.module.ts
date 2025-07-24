@@ -10,6 +10,7 @@ import { PrismaPermissionModule } from './permission/prisma-permission.module'
 import { PrismaService } from './prisma.service'
 import { PrismaRoleModule } from './role/prisma-role.module'
 import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
+import { PrismaTokenModule } from './token/prisma-token.module'
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
 		PrismaPermissionModule,
 		PrismaRoleModule,
 		PrismaSchedulingModule,
+		PrismaTokenModule,
 	],
 	providers: [PrismaService],
 	exports: [
@@ -35,6 +37,7 @@ import { PrismaSchedulingModule } from './scheduling/prisma-scheduling.module'
 		PrismaLeadModule,
 		PrismaRoleModule,
 		PrismaSchedulingModule,
+		PrismaTokenModule,
 	],
 })
 export class PrismaModule {}

@@ -1,16 +1,37 @@
 import { Injectable } from '@nestjs/common'
-import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { AuthenticationRepository } from '@/application/repositories/authentication.repository'
 import { Authentication } from '@/domain/authentication/entities/authentication.entity'
+import { PrismaService } from '../../prisma.service'
+import { PrismaAuthenticationMapper } from '../mappers/authentication.prisma-mapper'
 
 @Injectable()
 export class PrismaAuthenticationRepository implements AuthenticationRepository {
-	getByToken(token: string): Promise<Authentication | null> {
-		throw new Error('Method not implemented.')
+	constructor(
+		private authenticationMapper: PrismaAuthenticationMapper,
+		private prisma: PrismaService,
+	) {}
+	async getByToken(token: string): Promise<Authentication | null> {
+		const authentication = await this.prisma.authentication.findUnique({
+			where: { token },
+		})
+
+		if (!authentication) {
+			return null
+		}
+
+		return this.authenticationMapper.toDomain(authentication)
 	}
 	async create(authentication: Authentication): Promise<void> {
-		throw new Error('Method not implemented.')
+		const data = await this.authenticationMapper.toPrisma(authentication)
+		await this.prisma.authentication.create({ data })
 	}
 	async save(authentication: Authentication): Promise<void> {
-		throw new Error('Method not implemented.')
+		const data = await this.authenticationMapper.toPrisma(authentication)
+		await this.prisma.authentication.update({
+			where: {
+				id: data.id,
+			},
+			data,
+		})
 	}
 }

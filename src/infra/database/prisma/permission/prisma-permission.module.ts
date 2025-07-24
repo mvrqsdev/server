@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
-import { PermissionRepository } from '@/application/repositories/permission/permission.repository'
-import { EnvModule } from '@/infra/env/env.module'
+import { PermissionRepository } from '@/application/repositories/permission.repository'
 import { PrismaCoreModule } from '../prisma-core.module'
 import { PrismaPermissionMapper } from './mappers/permission.prisma-mapper'
 import { PrismaPermissionRepository } from './repositories/prisma-permission.repository'
 
 @Module({
-	imports: [PrismaCoreModule, EnvModule],
+	imports: [PrismaCoreModule],
 	providers: [
 		PrismaPermissionMapper,
 		{

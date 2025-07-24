@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { Prisma, Authentication as PrismaAuthentication } from '@prisma/client'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import {
@@ -6,8 +7,9 @@ import {
 } from '@/domain/authentication/entities/authentication.entity'
 import { TokenValue } from '@/domain/authentication/value-objects/token-value'
 
+@Injectable()
 export class PrismaAuthenticationMapper {
-	static toDomain(raw: PrismaAuthentication): Authentication {
+	toDomain(raw: PrismaAuthentication): Authentication {
 		return Authentication.create(
 			{
 				agentId: new UniqueEntityID(raw.agentId),
@@ -24,9 +26,7 @@ export class PrismaAuthenticationMapper {
 		)
 	}
 
-	static toPrisma(
-		authentication: Authentication,
-	): Prisma.AuthenticationUncheckedCreateInput {
+	toPrisma(authentication: Authentication): Prisma.AuthenticationUncheckedCreateInput {
 		return {
 			id: authentication.id.toString(),
 			agentId: authentication.agentId.toString(),

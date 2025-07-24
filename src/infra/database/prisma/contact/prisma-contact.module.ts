@@ -1,11 +1,10 @@
-import { forwardRef, Module } from '@nestjs/common'
-import { ContactRepository } from '@/application/repositories/contact/contact.repository'
-import { FacadeModule } from '@/infra/http/facades/facade.module'
+import { Module } from '@nestjs/common'
+import { ContactRepository } from '@/application/repositories/contact.repository'
 import { PrismaCoreModule } from '../prisma-core.module'
 import { PrismaContactRepository } from './repositories/prisma-contact.repository'
 
 @Module({
-	imports: [PrismaCoreModule, forwardRef(() => FacadeModule)],
+	imports: [PrismaCoreModule],
 	providers: [
 		{
 			provide: ContactRepository,

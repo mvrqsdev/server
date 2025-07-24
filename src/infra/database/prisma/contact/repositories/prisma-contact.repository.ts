@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ContactRepository } from '@/application/repositories/contact/contact.repository'
+import { ContactRepository } from '@/application/repositories/contact.repository'
 import { Contact } from '@/domain/contact/entities/contact.entity'
 import { PrismaService } from '../../prisma.service'
 import { PrismaContactMapper } from '../mappers/contact.prisma-mapper'

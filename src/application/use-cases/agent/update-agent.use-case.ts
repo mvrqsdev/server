@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { HashGenerator } from '@/application/cryptography/hash-generator'
-import { AgentRepository } from '@/application/repositories/agent/agent.repository'
-import { RoleRepository } from '@/application/repositories/role/role.repository'
+import { AgentRepository } from '@/application/repositories/agent.repository'
+import { RoleRepository } from '@/application/repositories/role.repository'
 import { BaseUseCase } from '@/core/use-cases/base-use-case'
 import { Agent } from '@/domain/agent/entities/agent.entity'
 import { AgentRoles } from '@/domain/agent/entities/agent-roles.watched-list'
 import { RoleNotFoundError } from '../role/errors/role-not-found.error'
 import { AgentAlreadyExistsWithSameEmailError } from './errors/agent-already-exists-with-same-email.error'
-import { AgentNotFoundError } from './errors/agent-not-found.error'
 
 interface UpdateAgentUseCaseRequest {
-	agentId: string
+	agent: Agent
 	name?: string
 	email?: string
 	password?: string
 	roles?: string[]
+	status?: 'Invited' | 'Inactive'
 }
 
 interface UpdateAgentUseCaseResponse {
@@ -31,18 +31,13 @@ export class UpdateAgentUseCase
 		private roleRepository: RoleRepository,
 	) {}
 	async execute({
-		agentId,
+		agent,
 		name,
 		email,
 		password,
 		roles,
+		status,
 	}: UpdateAgentUseCaseRequest): Promise<UpdateAgentUseCaseResponse> {
-		const agent = await this.agentRepository.findById(agentId)
-
-		if (!agent) {
-			throw new AgentNotFoundError()
-		}
-
 		if (email) {
 			const agentWithSameEmail = await this.agentRepository.findByEmail(email)
 
@@ -52,8 +47,8 @@ export class UpdateAgentUseCase
 				if (!isSameAgent) {
 					throw new AgentAlreadyExistsWithSameEmailError()
 				}
-				agent.email = email
 			}
+			agent.email = email
 		}
 
 		if (name) {
@@ -78,6 +73,14 @@ export class UpdateAgentUseCase
 			agentRoles.update(fetchedRoles)
 
 			agent.roles = agentRoles
+		}
+
+		if (status && status === 'Inactive') {
+			agent.inactiveAgent()
+		}
+
+		if (status && status === 'Invited') {
+			agent.inviteAgent()
 		}
 
 		await this.agentRepository.save(agent)

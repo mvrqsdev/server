@@ -37,11 +37,11 @@ export class AgentController {
 	@Get('/:agentId')
 	@Public()
 	@ApiOperation({
-		summary: 'Obter Agente',
+		summary: 'Get Agent',
 	})
 	@HttpCode(200)
 	async get(@Param('agentId') agentId: string) {
-		const { agent } = await this.agentFacade.getAgent(this.findAgentByIdUseCase, {
+		const { agent } = await this.agentFacade.getAgent('id', {
 			agentId,
 		})
 		return AgentPresenter.toHTTP(agent)
@@ -49,21 +49,18 @@ export class AgentController {
 
 	@Get()
 	@ApiOperation({
-		summary: 'Listar Agentes',
+		summary: 'List Agents',
 	})
 	@Public()
 	@HttpCode(200)
 	async getMany(@Query(zodValidationGetManyQueryProps) params: GetManyQueryProps) {
-		const { agents } = await this.agentFacade.getMany(
-			this.getManyAgentsByFilterUseCase,
-			params,
-		)
+		const { agents } = await this.agentFacade.getMany('filters', { ...params })
 		return agents.map(AgentPresenter.toHTTP)
 	}
 
 	@Post()
 	@ApiOperation({
-		summary: 'Criar Agente',
+		summary: 'Create Agent',
 	})
 	@Public()
 	@HttpCode(200)
@@ -74,7 +71,7 @@ export class AgentController {
 
 	@Put('/:agentId')
 	@ApiOperation({
-		summary: 'Atualizar Agente',
+		summary: 'Update Agent',
 	})
 	@Public()
 	@HttpCode(201)
@@ -83,13 +80,37 @@ export class AgentController {
 		@Body(zodValidationUpdateAgentBodyProps) body: UpdateAgentBodyProps,
 	) {
 		const { agentId } = params
-		const { agent } = await this.agentFacade.update({ agentId, ...body })
+		const { agent } = await this.agentFacade.update('id', { agentId }, body)
+		return AgentPresenter.toHTTP(agent)
+	}
+
+	@Post('/:agentId/invite')
+	@Public()
+	@ApiOperation({
+		summary: 'Invite Agent',
+	})
+	async invite(@Param(zodValidationGetAgentIdParam) params: GetAgentIdParam) {
+		const { agentId } = params
+		const { agent } = await this.agentFacade.update(
+			'id',
+			{ agentId },
+			{ status: 'Invited' },
+		)
 		return AgentPresenter.toHTTP(agent)
 	}
 
 	@Delete('/:agentId')
+	@Public()
 	@ApiOperation({
-		summary: 'Inativar Agente',
+		summary: 'Inactivate Agent',
 	})
-	async delete(@Param('agentId') agentId: string) {}
+	async delete(@Param(zodValidationGetAgentIdParam) params: GetAgentIdParam) {
+		const { agentId } = params
+		const { agent } = await this.agentFacade.update(
+			'id',
+			{ agentId },
+			{ status: 'Inactive' },
+		)
+		return AgentPresenter.toHTTP(agent)
+	}
 }

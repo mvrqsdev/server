@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { LeadRepository } from '@/application/repositories/lead/lead.repository'
-import { SchedulingRepository } from '@/application/repositories/scheduling/scheduling.repository'
+import { LeadRepository } from '@/application/repositories/lead.repository'
+import { SchedulingRepository } from '@/application/repositories/scheduling.repository'
 import { Lead } from '@/domain/lead/entities/lead.entity'
 import { PrismaService } from '../../prisma.service'
 import { PrismaLeadMapper } from '../mappers/lead.prisma-mapper'

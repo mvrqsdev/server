@@ -1,30 +1,40 @@
 import { BullModule } from '@nestjs/bullmq'
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { IEnvService } from '@/core/repositories/env-service.interface'
+import { PrismaModule } from '../database/prisma/prisma.module'
 import { EnvModule } from '../env/env.module'
-import { RouletteQueueModule } from './roulette/roulette-queue.module'
+import { FacadeModule } from '../http/facades/facade.module'
+import { MailModule } from '../mail/mail.module'
+import { TokenMailProcessor } from './mail/token-mail.processor'
+// import { RouletteQueueModule } from './roulette/roulette-queue.module'
 
 @Module({
 	imports: [
-		// BullModule.forRootAsync({
-		// 	imports: [EnvModule],
-		// 	inject: [IEnvService],
-		// 	useFactory: async (envService: IEnvService) => ({
-		// 		connection: {
-		// 			url: envService.get('REDIS_URI'),
-		// 		},
-		// 		defaultJobOptions: {
-		// 			removeOnComplete: 100,
-		// 			removeOnFail: 1000,
-		// 			attempts: 3,
-		// 			backoff: {
-		// 				type: 'exponential',
-		// 				delay: 1000,
-		// 			},
-		// 		},
-		// 	}),
-		// }),
+		MailModule,
+		forwardRef(() => FacadeModule),
+		forwardRef(() => PrismaModule),
+		BullModule.forRootAsync({
+			imports: [EnvModule],
+			inject: [IEnvService],
+			useFactory: async (envService: IEnvService) => ({
+				connection: {
+					url: envService.get('REDIS_URI'),
+				},
+				defaultJobOptions: {
+					removeOnComplete: 100,
+					removeOnFail: 1000,
+					attempts: 3,
+					backoff: {
+						type: 'exponential',
+						delay: 1000,
+					},
+				},
+			}),
+		}),
+		BullModule.registerQueue({ name: 'token-mail' }),
 		// RouletteQueueModule,
 	],
+	providers: [TokenMailProcessor],
+	exports: [BullModule],
 })
 export class QueueModule {}

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { HashGenerator } from '@/application/cryptography/hash-generator'
-import { TokenFacade } from '@/application/facades/token/token.facade'
-import { AgentRepository } from '@/application/repositories/agent/agent.repository'
-import { Inactive } from '@/application/repositories/agent/states/inactive-agent-status'
-import { RoleRepository } from '@/application/repositories/role/role.repository'
+import { AgentRepository } from '@/application/repositories/agent.repository'
+import { RoleRepository } from '@/application/repositories/role.repository'
 import { BaseUseCase } from '@/core/use-cases/base-use-case'
 import { Agent } from '@/domain/agent/entities/agent.entity'
 import { AgentRoles } from '@/domain/agent/entities/agent-roles.watched-list'
+import { Invited } from '@/domain/agent/states/invited-agent-status'
 import { RoleNotFoundError } from '../role/errors/role-not-found.error'
 
 type CreateAgentUseCaseRequest = {
@@ -27,7 +26,6 @@ export class CreateAgentUseCase
 		private agentRepository: AgentRepository,
 		private roleRepository: RoleRepository,
 		private hashGenerator: HashGenerator,
-		private tokenFacade: TokenFacade,
 	) {}
 	async execute({
 		name,
@@ -40,7 +38,7 @@ export class CreateAgentUseCase
 			name,
 			email,
 			password: hashedPassword,
-			status: new Inactive(this.tokenFacade),
+			status: new Invited(),
 		})
 
 		const existingRoles = await this.roleRepository.findManyByIds(roles)

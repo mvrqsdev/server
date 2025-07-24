@@ -6,9 +6,9 @@ export interface AgentCreate {
 }
 
 export interface AgentUpdate {
-	agentId: string
 	name?: string
 	email?: string
 	password?: string
 	roles?: string[]
+	status?: 'Invited' | 'Inactive'
 }

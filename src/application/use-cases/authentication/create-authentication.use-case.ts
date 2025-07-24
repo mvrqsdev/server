@@ -1,4 +1,5 @@
-import { AuthenticationRepository } from '@/application/repositories/authentication/authentication.repository'
+import { Injectable } from '@nestjs/common'
+import { AuthenticationRepository } from '@/application/repositories/authentication.repository'
 import { clock } from '@/core/helpers/dayjs'
 import { IEnvService } from '@/core/repositories/env-service.interface'
 import { BaseUseCase } from '@/core/use-cases/base-use-case'
@@ -17,6 +18,7 @@ interface CreateAuthenticationUseCaseResponse {
 	authentication: Authentication
 }
 
+@Injectable()
 export class CreateAuthenticationUseCase
 	implements
 		BaseUseCase<CreateAuthenticationUseCaseRequest, CreateAuthenticationUseCaseResponse>
