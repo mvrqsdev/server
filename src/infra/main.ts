@@ -14,6 +14,7 @@ async function bootstrap() {
 	const port = configService.get('PORT')
 
 	app.use(cookieParser())
+	app.enableCors()
 	app.setBaseViewsDir(join(__dirname, '..', 'views'))
 	app.setViewEngine('hbs')
 	app.useBodyParser('json', { limit: '10mb' })

@@ -18,7 +18,7 @@ export class RouletteService {
 			}
 
 			const lastIndex = agentsInRotation.findIndex(
-				(agent) => agent.id.toString() === lastLead.agentId.toString(),
+				(agent) => agent.id.toString() === lastLead.agentId?.toString(),
 			)
 
 			const nextIndex = (lastIndex + 1) % agentsInRotation.length

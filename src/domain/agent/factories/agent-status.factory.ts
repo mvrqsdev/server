@@ -2,8 +2,6 @@ import { Inject, Injectable } from '@nestjs/common'
 import { AgentStatus } from '@/domain/agent/contracts/agent-status.contract'
 import { AgentStateNotFoundError } from './errors/agent-state-not-found.error'
 
-export type AgentStateType = 'Active' | 'Inactive' | 'Invited'
-
 @Injectable()
 export class AgentStatusFactory {
 	constructor(

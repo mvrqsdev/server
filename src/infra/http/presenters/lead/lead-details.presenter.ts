@@ -8,7 +8,7 @@ export class LeadDetailsPresenter {
 		return {
 			id: leadDetails.leadId.toString(),
 			contactId: leadDetails.contactId.toString(),
-			agentId: leadDetails.agentId.toString(),
+			agentId: leadDetails.agentId ? leadDetails.agentId.toString() : null,
 			converted: leadDetails.converted,
 			status: leadDetails.status.state,
 			value: leadDetails.value,

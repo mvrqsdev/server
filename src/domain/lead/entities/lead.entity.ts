@@ -8,7 +8,7 @@ import { LeadScheduling } from './lead-scheduling.watched-list'
 
 export interface LeadProps {
 	contactId: UniqueEntityID
-	agentId: UniqueEntityID
+	agentId?: UniqueEntityID | null
 	schedulings: LeadScheduling
 	converted: boolean
 	status: LeadState
@@ -81,10 +81,10 @@ export class Lead extends AggregateRoot<LeadProps> {
 	}
 
 	get agentId() {
-		return this.props.agentId
+		return this.props.agentId ?? null
 	}
 
-	set agentId(id: UniqueEntityID) {
+	set agentId(id: UniqueEntityID | null) {
 		this.props.agentId = id
 		this.touch()
 	}
@@ -122,13 +122,14 @@ export class Lead extends AggregateRoot<LeadProps> {
 	static create(
 		props: Optional<
 			LeadProps,
-			'createdAt' | 'value' | 'converted' | 'status' | 'schedulings'
+			'createdAt' | 'agentId' | 'value' | 'converted' | 'status' | 'schedulings'
 		>,
 		id?: UniqueEntityID,
 	) {
 		const lead = new Lead(
 			{
 				...props,
+				agentId: props.agentId ?? null,
 				schedulings: props.schedulings ?? new LeadScheduling(),
 				value: props.value ?? 0,
 				converted: props.converted ?? false,

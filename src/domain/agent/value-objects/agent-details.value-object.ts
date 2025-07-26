@@ -1,6 +1,5 @@
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { ValueObject } from '@/core/value-objects/value-object'
-import { Connection } from '@/domain/connection/entities/connection.entity'
 import { AgentStatus } from '../contracts/agent-status.contract'
 
 export interface AgentDetailsProps {
@@ -12,7 +11,6 @@ export interface AgentDetailsProps {
 	status: AgentStatus
 	createdAt: Date
 	updatedAt?: Date | null
-	connections: Connection[]
 }
 
 export class AgentDetails extends ValueObject<AgentDetailsProps> {
@@ -46,10 +44,6 @@ export class AgentDetails extends ValueObject<AgentDetailsProps> {
 
 	get updatedAt() {
 		return this.props.updatedAt
-	}
-
-	get connections() {
-		return this.props.connections
 	}
 
 	static create(props: AgentDetailsProps) {

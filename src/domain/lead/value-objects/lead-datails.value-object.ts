@@ -9,7 +9,7 @@ export interface LeadDetailsProps {
 	leadId: UniqueEntityID
 	contactId: UniqueEntityID
 	contact: Contact
-	agentId: UniqueEntityID
+	agentId?: UniqueEntityID | null
 	agent: Agent
 	schedulings: Scheduling[]
 	converted: boolean

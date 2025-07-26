@@ -177,7 +177,6 @@ export class PrismaAgentRepository implements AgentRepository {
 			},
 			include: {
 				Authentications: true,
-				Connection: true,
 				Leads: true,
 				LeadsMessage: true,
 				Schedulings: true,

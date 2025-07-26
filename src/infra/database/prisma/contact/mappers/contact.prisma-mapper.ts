@@ -1,10 +1,12 @@
+import { Injectable } from '@nestjs/common'
 import { Prisma, Contact as PrismaContact } from '@prisma/client'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { WhatsappNumber } from '@/core/value-objects/whatsapp-number.value-object'
 import { Contact } from '@/domain/contact/entities/contact.entity'
 
+@Injectable()
 export class PrismaContactMapper {
-	static toDomain(raw: PrismaContact): Contact {
+	toDomain(raw: PrismaContact): Contact {
 		return Contact.create(
 			{
 				name: raw.name,
@@ -17,7 +19,7 @@ export class PrismaContactMapper {
 		)
 	}
 
-	static toPrisma(contact: Contact): Prisma.ContactUncheckedCreateInput {
+	toPrisma(contact: Contact): Prisma.ContactUncheckedCreateInput {
 		return {
 			id: contact.id.toString(),
 			name: contact.name,

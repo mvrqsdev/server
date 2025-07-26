@@ -1,23 +1,14 @@
 import { Injectable } from '@nestjs/common'
-import { User as PrismaAgent, Connection as PrismaConnection } from '@prisma/client'
+import { User as PrismaAgent } from '@prisma/client'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
-import {
-	AgentStateType,
-	AgentStatusFactory,
-} from '@/domain/agent/factories/agent-status.factory'
+import { AgentStatusFactory } from '@/domain/agent/factories/agent-status.factory'
 import { AgentDetails } from '@/domain/agent/value-objects/agent-details.value-object'
-import { PrismaConnectionMapper } from '../../connection/mappers/connection.prisma-mapper'
 
-export type PrismaAgentDetails = PrismaAgent & {
-	Connection: PrismaConnection[]
-}
+export type PrismaAgentDetails = PrismaAgent
 
 @Injectable()
 export class PrismaAgentDetailsMapper {
-	constructor(
-		private connectionMapper: PrismaConnectionMapper,
-		private agentStatusFactory: AgentStatusFactory,
-	) {}
+	constructor(private agentStatusFactory: AgentStatusFactory) {}
 	toDomain(raw: PrismaAgentDetails): AgentDetails {
 		return AgentDetails.create({
 			agentId: new UniqueEntityID(raw.id),
@@ -25,8 +16,7 @@ export class PrismaAgentDetailsMapper {
 			isInRotation: raw.isInRotation,
 			email: raw.email,
 			master: raw.master,
-			status: this.agentStatusFactory.create(raw.status as AgentStateType),
-			connections: raw.Connection.map(this.connectionMapper.toDomain),
+			status: this.agentStatusFactory.create(raw.status),
 			createdAt: raw.createdAt,
 			updatedAt: raw.updatedAt,
 		})

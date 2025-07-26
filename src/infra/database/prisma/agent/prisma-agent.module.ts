@@ -21,7 +21,6 @@ import { Inactive } from '@/domain/agent/states/inactive-agent-status'
 import { Invited } from '@/domain/agent/states/invited-agent-status'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { FacadeModule } from '@/infra/http/facades/facade.module'
-import { PrismaConnectionModule } from '../connection/prisma-connection.module'
 import { PrismaCoreModule } from '../prisma-core.module'
 import { PrismaRoleModule } from '../role/prisma-role.module'
 import { PrismaAgentMapper } from './mappers/agent.prisma-mapper'
@@ -32,7 +31,6 @@ import { PrismaAgentRepository } from './repositories/prisma-agent.repository'
 	imports: [
 		CryptographyModule,
 		PrismaCoreModule,
-		PrismaConnectionModule,
 		forwardRef(() => PrismaRoleModule),
 		forwardRef(() => FacadeModule),
 	],

@@ -20,13 +20,16 @@ export type PrismaLeadDetails = PrismaLead & {
 
 @Injectable()
 export class PrismaLeadDetailsMapper {
-	constructor(private agentMapper: PrismaAgentMapper) {}
+	constructor(
+		private agentMapper: PrismaAgentMapper,
+		private contactMapper: PrismaContactMapper,
+	) {}
 	toDomain(raw: PrismaLeadDetails): LeadDetails {
 		return LeadDetails.create({
 			leadId: new UniqueEntityID(raw.id),
 			contactId: new UniqueEntityID(raw.contactId),
-			contact: PrismaContactMapper.toDomain(raw.Contact),
-			agentId: new UniqueEntityID(raw.agentId),
+			contact: this.contactMapper.toDomain(raw.Contact),
+			agentId: raw.agentId ? new UniqueEntityID(raw.agentId) : null,
 			agent: this.agentMapper.toDomain(raw.Agent),
 			schedulings: raw.Schedulings.map(PrismaSchedulingMapper.toDomain),
 			converted: raw.converted,

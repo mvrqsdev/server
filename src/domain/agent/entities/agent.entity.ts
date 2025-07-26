@@ -35,10 +35,11 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	set email(email: string) {
-		if (this.props.email !== email) {
+		const oldEmail = this.props.email
+		this.props.email = email
+		if (oldEmail !== email) {
 			this.addDomainEvent(new AlterAgentEmailEvent(this))
 		}
-		this.props.email = email
 		this.touch()
 	}
 
@@ -56,10 +57,11 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	set status(newStatus: AgentStatus) {
-		if (this.props.status.getName() !== newStatus.getName()) {
+		const oldStatus = this.props.status
+		this.props.status = newStatus
+		if (oldStatus.getName() !== newStatus.getName()) {
 			this.addDomainEvent(new AlterAgentStatusEvent(this))
 		}
-		this.props.status = newStatus
 		this.touch()
 	}
 

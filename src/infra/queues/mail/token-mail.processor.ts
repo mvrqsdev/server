@@ -17,7 +17,6 @@ export class TokenMailProcessor extends WorkerHost {
 	): Promise<void> {
 		const sender = await this.tokenMailSenderFactory.getSender('Invite')
 		const { tokenId, publicToken } = job.data
-		console.log('tokenPublico', publicToken)
 		const { token } = await this.tokenFacade.getToken('id', { tokenId })
 		await sender.send({ token, publicToken })
 	}

@@ -1,13 +1,15 @@
+import { Injectable } from '@nestjs/common'
 import { Prisma, Lead as PrismaLead } from '@prisma/client'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { Lead } from '@/domain/lead/entities/lead.entity'
 import { LeadStateFactory } from '@/domain/lead/factories/lead-state-factory'
 
+@Injectable()
 export class PrismaLeadMapper {
-	static toDomain(raw: PrismaLead): Lead {
+	toDomain(raw: PrismaLead): Lead {
 		return Lead.create(
 			{
-				agentId: new UniqueEntityID(raw.agentId),
+				agentId: raw.agentId ? new UniqueEntityID(raw.agentId) : null,
 				contactId: new UniqueEntityID(raw.contactId),
 				converted: raw.converted,
 				status: LeadStateFactory.create(raw.status),
@@ -19,10 +21,10 @@ export class PrismaLeadMapper {
 		)
 	}
 
-	static toPrisma(lead: Lead): Prisma.LeadUncheckedCreateInput {
+	toPrisma(lead: Lead): Prisma.LeadUncheckedCreateInput {
 		return {
 			id: lead.id.toString(),
-			agentId: lead.agentId.toString(),
+			agentId: lead.agentId ? lead.agentId.toString() : null,
 			contactId: lead.contactId.toString(),
 			converted: lead.converted,
 			status: lead.status.state,

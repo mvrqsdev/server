@@ -40,7 +40,8 @@ export class AgentController {
 		summary: 'Get Agent',
 	})
 	@HttpCode(200)
-	async get(@Param('agentId') agentId: string) {
+	async get(@Param(zodValidationGetAgentIdParam) params: GetAgentIdParam) {
+		const { agentId } = params
 		const { agent } = await this.agentFacade.getAgent('id', {
 			agentId,
 		})

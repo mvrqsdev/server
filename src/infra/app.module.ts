@@ -8,6 +8,7 @@ import { AuthenticationModule } from './guards/authentication/authentication.mod
 import { AuthorizationModule } from './guards/authorization/authorization.module'
 import { HttpModule } from './http/http.module'
 import { QueueModule } from './queues/queue.module'
+import { ServicesModule } from './services/services.module'
 
 @Module({
 	imports: [
@@ -16,6 +17,7 @@ import { QueueModule } from './queues/queue.module'
 			isGlobal: true,
 		}),
 		PrismaModule,
+		ServicesModule,
 		AuthenticationModule,
 		AuthorizationModule,
 		HttpModule,

@@ -20,7 +20,6 @@ model User {
 
   Leads           Lead[]
   LeadsMessage    Message[]
-  Connection      Connection[]
   Schedulings     Scheduling[]
   Roles           UserRole[]
   Authentications Authentication[]
@@ -115,44 +114,15 @@ model Authentication {
   Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
 }
 
-model Instance {
-  id        String    @id @default(uuid())
-  agentId   String
-  number    String?
-  session   Json?
-  status    String
-  isPrimary Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-
-  @@map("instances")
-}
-
-model Connection {
-  id         String    @id @default(uuid())
-  name       String    @unique
-  number     String    @unique
-  instanceId String
-  status     String
-  token      String
-  principal  Boolean
-  agentId    String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
-
-  Agent User @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  @@map("connections")
-}
-
 model Contact {
-  id        String    @id @default(uuid())
-  name      String
-  number    String    @unique
-  email     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  Leads     Lead[]
+  id         String      @id @default(uuid())
+  name       String
+  number     String      @unique
+  email      String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime?   @updatedAt
+  Leads      Lead[]
+  IAMessages IAMessage[]
 
   @@map("contacts")
 }
@@ -183,7 +153,7 @@ model LeadCampaigns {
 model Lead {
   id        String    @id @default(uuid())
   contactId String
-  agentId   String
+  agentId   String?
   converted Boolean   @default(false)
   status    String
   value     Int       @default(0)
@@ -191,12 +161,32 @@ model Lead {
   updatedAt DateTime? @updatedAt
 
   Contact     Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  Agent       User            @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  Agent       User?           @relation(fields: [agentId], references: [id], onDelete: Cascade)
   Schedulings Scheduling[]
   Messages    Message[]
   Campaigns   LeadCampaigns[]
+  IAMessages  IAMessage[]
 
   @@map("leads")
+}
+
+model IAMessage {
+  id          String    @id @default(uuid())
+  leadId      String
+  contactId   String
+  content     String?
+  mediaUrl    String?
+  mediaKey    String?
+  messageType String
+  fromBot     Boolean   @default(true)
+  sessionId   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  Lead    Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  Contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@map("ia_messages")
 }
 
 model Scheduling {
@@ -230,4 +220,21 @@ model Message {
   Lead  Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@map("messages")
+}
+
+model Instance {
+  id              String    @id @default(uuid())
+  name            String
+  connection      String
+  ownerJid        String?
+  profileName     String?
+  profilePicUrl   String?
+  number          String?
+  clientName      String?
+  disconnectionAt DateTime?
+  agentId         String
+  session         Json?
+  lastQrCode      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
 }

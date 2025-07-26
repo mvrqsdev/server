@@ -9,17 +9,29 @@ import { PrismaLeadMapper } from '../mappers/lead.prisma-mapper'
 export class PrismaLeadRepository implements LeadRepository {
 	constructor(
 		private prisma: PrismaService,
+		private leadMapper: PrismaLeadMapper,
 		private schedulingRepository: SchedulingRepository,
 	) {}
+	async findById(id: string): Promise<Lead | null> {
+		const lead = await this.prisma.lead.findUnique({
+			where: {
+				id,
+			},
+		})
+
+		if (!lead) return null
+
+		return this.leadMapper.toDomain(lead)
+	}
 
 	async create(lead: Lead): Promise<void> {
-		const data = PrismaLeadMapper.toPrisma(lead)
+		const data = this.leadMapper.toPrisma(lead)
 		await this.prisma.lead.create({ data })
 		// await this.schedulingRepository.createMany(lead.schedulings.getItems())
 	}
 
 	async save(lead: Lead): Promise<void> {
-		const data = PrismaLeadMapper.toPrisma(lead)
+		const data = this.leadMapper.toPrisma(lead)
 
 		await Promise.all([
 			await this.prisma.lead.update({
