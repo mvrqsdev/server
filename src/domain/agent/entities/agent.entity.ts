@@ -1,18 +1,21 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
+import { Email } from '@/core/value-objects/email.value-object'
+import { Name } from '@/core/value-objects/name.value-object'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
+import { Role } from '@/domain/role/entities/role.entity'
 import { AgentStatus } from '../contracts/agent-status.contract'
 import { AlterAgentEmailEvent } from '../events/alter-agent-email.event'
 import { AlterAgentStatusEvent } from '../events/alter-agent-status.event'
 import { CreatedAgentEvent } from '../events/created-agent.event'
+import { Inactive } from '../states/inactive-agent-status'
 import { AgentRoles } from './agent-roles.watched-list'
 
 export interface AgentProps {
-	name: string
-	email: string
+	name: Name
+	email: Email
 	password: string
-	master: boolean
 	isInRotation: boolean
 	roles: AgentRoles
 	status: AgentStatus
@@ -25,7 +28,7 @@ export class Agent extends AggregateRoot<AgentProps> {
 		return this.props.name
 	}
 
-	set name(name: string) {
+	set name(name: Name) {
 		this.props.name = name
 		this.touch()
 	}
@@ -34,7 +37,7 @@ export class Agent extends AggregateRoot<AgentProps> {
 		return this.props.email
 	}
 
-	set email(email: string) {
+	set email(email: Email) {
 		const oldEmail = this.props.email
 		this.props.email = email
 		if (oldEmail !== email) {
@@ -77,13 +80,34 @@ export class Agent extends AggregateRoot<AgentProps> {
 		this.status.inviteAgent(this)
 	}
 
-	get roles() {
-		return this.props.roles
+	public getNewRoles() {
+		return this.props.roles.getNewItems()
 	}
 
-	set roles(roles: AgentRoles) {
-		this.props.roles = roles
+	public getRemovedRoles() {
+		return this.props.roles.getRemovedItems()
+	}
+
+	public getUpdatedRoles() {
+		return this.props.roles.getUpdatedItems()
+	}
+
+	public addRole(role: Role) {
+		if (this.props.roles.exists(role)) return
+
+		this.props.roles.add(role)
 		this.touch()
+	}
+
+	public removeRole(role: Role) {
+		if (!this.props.roles.exists(role)) return
+
+		this.props.roles.remove(role)
+		this.touch()
+	}
+
+	get roles() {
+		return this.props.roles
 	}
 
 	get isInRotation() {
@@ -92,15 +116,6 @@ export class Agent extends AggregateRoot<AgentProps> {
 
 	set isInRotation(value: boolean) {
 		this.props.isInRotation = value
-		this.touch()
-	}
-
-	get master() {
-		return this.props.master
-	}
-
-	set master(value: boolean) {
-		this.props.master = value
 		this.touch()
 	}
 
@@ -117,14 +132,14 @@ export class Agent extends AggregateRoot<AgentProps> {
 	}
 
 	static create(
-		props: Optional<AgentProps, 'createdAt' | 'roles' | 'master' | 'isInRotation'>,
+		props: Optional<AgentProps, 'createdAt' | 'roles' | 'isInRotation' | 'status'>,
 		id?: UniqueEntityID,
 	) {
 		const agent = new Agent(
 			{
 				...props,
+				status: props.status ?? new Inactive(),
 				isInRotation: props.isInRotation ?? false,
-				master: props.master ?? false,
 				roles: props.roles ?? new AgentRoles(),
 				createdAt: props.createdAt ?? clock().toDate(),
 			},

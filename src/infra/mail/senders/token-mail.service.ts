@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { MailerService } from '@nestjs-modules/mailer'
-import { AgentFacade } from '@/application/facades/agent/agent.facade'
+import { AgentFacade } from '@/application/modules/agents/agent.facade'
 import { Token } from '@/domain/token/entities/token.entity'
 
 @Injectable()

@@ -3,7 +3,7 @@ import { Contact } from '@/domain/contact/entities/contact.entity'
 import { ContactCreate, ContactUpdate } from './interface'
 
 export abstract class ContactFacade {
-	abstract create(params: ContactCreate): Promise<{ contact: Contact }>
+	abstract findOrCreate(params: ContactCreate): Promise<{ contact: Contact }>
 	abstract update<T extends keyof GetContactStrategyFactoryTypeMap>(
 		type: T,
 		data: GetContactStrategyFactoryTypeMap[T],

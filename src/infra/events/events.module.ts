@@ -20,5 +20,14 @@ import { WAConnectionInitializer } from './wa-connection-initializer.service'
 		WAConnectionInitializer,
 		ChannelStartupService,
 	],
+	exports: [
+		OnAlterAgentEmail,
+		OnAlterAgentStatus,
+		OnCreatedAgent,
+		OnCreatedToken,
+		WAMonitoringService,
+		WAConnectionInitializer,
+		ChannelStartupService,
+	],
 })
 export class EventsModule {}

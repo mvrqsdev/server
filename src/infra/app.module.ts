@@ -22,6 +22,7 @@ import { ServicesModule } from './services/services.module'
 		AuthorizationModule,
 		HttpModule,
 		EventsModule,
+		ServicesModule,
 		EnvModule,
 		QueueModule,
 	],

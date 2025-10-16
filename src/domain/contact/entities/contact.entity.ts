@@ -3,6 +3,7 @@ import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { WhatsappNumber } from '@/core/value-objects/whatsapp-number.value-object'
+import { Lead } from '@/domain/lead/entities/lead.entity'
 import { ContactLeadList } from './contact-lead.watched-list'
 
 export interface ContactProps {
@@ -37,8 +38,22 @@ export class Contact extends AggregateRoot<ContactProps> {
 		return this.props.leads
 	}
 
-	set leads(leads: ContactLeadList) {
-		this.props.leads = leads
+	public getCurrentActiveLead(): Lead | null {
+		const currentLeads = this.props.leads.currentItems
+		const findIndex = currentLeads.findIndex((lead) => lead.status.state !== 'Off')
+		if (findIndex === -1) return null
+		return currentLeads[findIndex]
+	}
+
+	public addLead(lead: Lead) {
+		if (this.props.leads.exists(lead)) return
+		this.props.leads.add(lead)
+		this.touch()
+	}
+
+	public removeLead(lead: Lead) {
+		if (!this.props.leads.exists(lead)) return
+		this.props.leads.remove(lead)
 		this.touch()
 	}
 

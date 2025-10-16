@@ -1,4 +1,6 @@
+import { InjectQueue } from '@nestjs/bullmq'
 import { Injectable } from '@nestjs/common'
+import { Queue } from 'bullmq'
 import { IAMessageFacade } from '@/application/facades/ia-message/ia-message.facade'
 import {
 	IAMessageCreateProps,
@@ -24,9 +26,10 @@ export class NestIAMessageFacade implements IAMessageFacade {
 		private getManyIAMessagesStrategyFactory: GetManyIAMessagesStrategyFactory,
 		private updateIAMessageUseCase: UpdateIAMessageUseCase,
 		private createIAMessageUseCase: CreateIAMessageUseCase,
+		@InjectQueue('ai-message-processor') private queue: Queue,
 	) {}
 	async process(params: IAMessageProcessProps): Promise<void> {
-		throw new Error('Method not implemented.')
+		await this.queue.add('ai-message-processor', params)
 	}
 	async create(params: IAMessageCreateProps): Promise<{ iaMessage: IAMessage }> {
 		const { iaMessage } = await this.createIAMessageUseCase.execute(params)

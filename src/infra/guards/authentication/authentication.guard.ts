@@ -1,9 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
-import { AgentFacade } from '@/application/facades/agent/agent.facade'
-
 import { AuthenticationFacade } from '@/application/facades/authentication/authentication.facade'
+import { AgentFacade } from '@/application/modules/agents/agent.facade'
 
 import { TokenNotFoundError } from '@/application/use-cases/authentication/errors/token-not-found.error'
 import { IEnvService } from '@/core/repositories/env-service.interface'

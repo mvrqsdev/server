@@ -12,6 +12,22 @@ export class PrismaLeadRepository implements LeadRepository {
 		private leadMapper: PrismaLeadMapper,
 		private schedulingRepository: SchedulingRepository,
 	) {}
+	async findLastLeadByContactId(contactId: string): Promise<Lead | null> {
+		const lead = await this.prisma.lead.findFirst({
+			where: {
+				contactId,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		})
+
+		if (!lead) {
+			return null
+		}
+
+		return this.leadMapper.toDomain(lead)
+	}
 	async findById(id: string): Promise<Lead | null> {
 		const lead = await this.prisma.lead.findUnique({
 			where: {
@@ -26,7 +42,11 @@ export class PrismaLeadRepository implements LeadRepository {
 
 	async create(lead: Lead): Promise<void> {
 		const data = this.leadMapper.toPrisma(lead)
-		await this.prisma.lead.create({ data })
+		await this.prisma.lead.upsert({
+			where: { id: lead.id.toString() },
+			create: data,
+			update: data,
+		})
 		// await this.schedulingRepository.createMany(lead.schedulings.getItems())
 	}
 

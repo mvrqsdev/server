@@ -1,13 +1,29 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma, Role as PrismaRole } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { Slug } from '@/core/value-objects/slug'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { Role } from '@/domain/role/entities/role.entity'
+import { RolePermissions } from '@/domain/role/entities/role-permissions.watched-list'
 import { HexColor } from '@/domain/role/value-objects/hex-color.value-object'
+import { PrismaPermissionMapper } from '../../permission/mappers/permission.prisma-mapper'
 
+type RoleWithPermissions = Prisma.RoleGetPayload<{
+	include: {
+		Permissions: {
+			include: {
+				Permission: true
+			}
+		}
+	}
+}>
 @Injectable()
 export class PrismaRoleMapper {
-	toDomain(raw: PrismaRole): Role {
+	constructor(private permissionMapper: PrismaPermissionMapper) {}
+	toDomain(raw: RoleWithPermissions): Role {
+		const permissions = new RolePermissions(
+			raw.Permissions.map((item) => this.permissionMapper.toDomain(item.Permission)),
+		)
+
 		return Role.create(
 			{
 				name: raw.name,
@@ -16,6 +32,7 @@ export class PrismaRoleMapper {
 				slug: Slug.create(raw.slug),
 				createdAt: raw.createdAt,
 				updatedAt: raw.updatedAt,
+				permissions,
 			},
 			new UniqueEntityID(raw.id),
 		)

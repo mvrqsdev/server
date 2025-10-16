@@ -24,7 +24,7 @@ export class PrismaContactMapper {
 			id: contact.id.toString(),
 			name: contact.name,
 			email: contact.email,
-			number: contact.number.whatsappId,
+			number: contact.number.number,
 			createdAt: contact.createdAt,
 			updatedAt: contact.updatedAt,
 		}

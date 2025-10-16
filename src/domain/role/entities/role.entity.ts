@@ -4,7 +4,6 @@ import { Optional } from '@/core/types/optional'
 import { Slug } from '@/core/value-objects/slug'
 import { UniqueEntityID } from '@/core/value-objects/unique-entity-id'
 import { HexColor } from '../value-objects/hex-color.value-object'
-import { RoleAgents } from './role-agents.watched-list'
 import { RolePermissions } from './role-permissions.watched-list'
 
 interface RoleProps {
@@ -12,7 +11,6 @@ interface RoleProps {
 	description?: string | null
 	slug: Slug
 	color: HexColor
-	agents: RoleAgents
 	permissions: RolePermissions
 	createdAt: Date
 	updatedAt?: Date | null
@@ -51,15 +49,6 @@ export class Role extends AggregateRoot<RoleProps> {
 		this.touch()
 	}
 
-	get agents() {
-		return this.props.agents
-	}
-
-	set agents(agents: RoleAgents) {
-		this.props.agents = agents
-		this.touch()
-	}
-
 	get permissions() {
 		return this.props.permissions
 	}
@@ -82,13 +71,12 @@ export class Role extends AggregateRoot<RoleProps> {
 	}
 
 	static create(
-		props: Optional<RoleProps, 'createdAt' | 'slug' | 'permissions' | 'agents'>,
+		props: Optional<RoleProps, 'createdAt' | 'slug' | 'permissions'>,
 		id?: UniqueEntityID,
 	) {
 		const role = new Role(
 			{
 				...props,
-				agents: props.agents ?? new RoleAgents(),
 				permissions: props.permissions ?? new RolePermissions(),
 				slug: props.slug ?? Slug.createFromText(props.name),
 				createdAt: props.createdAt ?? clock().toDate(),

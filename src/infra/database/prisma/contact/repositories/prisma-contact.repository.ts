@@ -35,7 +35,11 @@ export class PrismaContactRepository implements ContactRepository {
 
 	async create(contact: Contact): Promise<void> {
 		const data = this.contactMapper.toPrisma(contact)
-		await this.prisma.contact.create({ data })
+		await this.prisma.contact.upsert({
+			where: { number: contact.number.whatsappId },
+			create: data,
+			update: data,
+		})
 	}
 	async save(contact: Contact): Promise<void> {
 		const data = this.contactMapper.toPrisma(contact)

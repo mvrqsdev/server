@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ContactRepository } from '@/application/repositories/contact.repository'
+import { CheckIfContactAlreadyExistsByNumberUseCase } from '@/application/use-cases/contact/check-if-contact-already-exists.use-case'
 import { CreateContactUseCase } from '@/application/use-cases/contact/create-contact.use-case'
 import { GetContactStrategyFactory } from '@/application/use-cases/contact/factories/get-contact-strategy.factory'
 import { FindContactByIdUseCase } from '@/application/use-cases/contact/find-contact-by-id.use-case'
@@ -18,6 +19,7 @@ import { PrismaContactRepository } from './repositories/prisma-contact.repositor
 			useClass: PrismaContactRepository,
 		},
 		GetContactStrategyFactory,
+		CheckIfContactAlreadyExistsByNumberUseCase,
 		CreateContactUseCase,
 		UpdateContactUseCase,
 		FindContactByIdUseCase,
@@ -27,6 +29,7 @@ import { PrismaContactRepository } from './repositories/prisma-contact.repositor
 		PrismaContactMapper,
 		ContactRepository,
 		GetContactStrategyFactory,
+		CheckIfContactAlreadyExistsByNumberUseCase,
 		CreateContactUseCase,
 		UpdateContactUseCase,
 		FindContactByIdUseCase,

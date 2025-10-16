@@ -10,7 +10,7 @@ import {
 	Query,
 } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { AgentFacade } from '@/application/facades/agent/agent.facade'
+import { AgentFacade } from '@/application/modules/agents/agent.facade'
 import { FindAgentByIdUseCase } from '@/application/use-cases/agent/find-agent-by-id.use-case'
 import { GetManyAgentsByFilterUseCase } from '@/application/use-cases/agent/get-many-agents-by-filters.use-case'
 import { Public } from '@/infra/guards/authentication/public'

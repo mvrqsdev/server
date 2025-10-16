@@ -1,8 +1,10 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { Injectable } from '@nestjs/common'
-import { AgentFacade, ValidateAgentInput } from '@/application/facades/agent/agent.facade'
-
 import { AgentCreate, AgentUpdate } from '@/application/facades/agent/interface'
+import {
+	AgentFacade,
+	ValidateAgentInput,
+} from '@/application/modules/agents/agent.facade'
 import { CheckIfThereNoAgentWithThisEmailUseCase } from '@/application/use-cases/agent/check-if-there-no-agent-with-this-email.use-case'
 import { CreateAgentUseCase } from '@/application/use-cases/agent/create-agent.use-case'
 import {

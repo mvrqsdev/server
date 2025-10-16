@@ -3,7 +3,7 @@ import { Lead } from '@/domain/lead/entities/lead.entity'
 import { LeadCreate, LeadUpdate } from './interface'
 
 export abstract class LeadFacade {
-	abstract create(params: LeadCreate): Promise<{ lead: Lead }>
+	abstract findOrCreate(params: LeadCreate): Promise<{ lead: Lead }>
 	abstract update<T extends keyof GetLeadStrategyFactoryTypeMap>(
 		type: T,
 		data: GetLeadStrategyFactoryTypeMap[T],

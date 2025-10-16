@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { Entity } from '@/core/entities/entity'
 import { clock } from '@/core/helpers/dayjs'
 import { Optional } from '@/core/types/optional'
 import { Slug } from '@/core/value-objects/slug'
@@ -12,7 +12,7 @@ interface PermissionProps {
 	updatedAt?: Date | null
 }
 
-export class Permission extends AggregateRoot<PermissionProps> {
+export class Permission extends Entity<PermissionProps> {
 	get name() {
 		return this.props.name
 	}
